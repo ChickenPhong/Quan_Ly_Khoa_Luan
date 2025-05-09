@@ -21,7 +21,7 @@ public class IndexController {
 
     @RequestMapping("/")
     public String index(Model model) {
-        model.addAttribute("deTais", deTaiService.getAllDeTais());
+        model.addAttribute("deTais", deTaiService.getAllDeTai());
         return "index";
     }
 }

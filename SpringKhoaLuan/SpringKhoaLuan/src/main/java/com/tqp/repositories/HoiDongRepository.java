@@ -2,18 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.tqp.services;
+package com.tqp.repositories;
 
 /**
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.pojo.HoiDong;
 import java.util.List;
-import com.tqp.pojo.DeTaiKhoaLuan;
 
-public interface DeTaiService {
-    List<DeTaiKhoaLuan> getAllDeTai();
-    DeTaiKhoaLuan getDeTaiById(int id);
-    DeTaiKhoaLuan addDeTai(DeTaiKhoaLuan deTai);
-    void deleteDeTai(int id);
+public interface HoiDongRepository {
+    List<HoiDong> getAll();
+    HoiDong getById(int id);
+    HoiDong save(HoiDong hd);
+    void delete(int id);
 }

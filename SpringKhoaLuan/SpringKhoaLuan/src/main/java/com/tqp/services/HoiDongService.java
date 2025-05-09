@@ -8,12 +8,12 @@ package com.tqp.services;
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.pojo.HoiDong;
 import java.util.List;
-import com.tqp.pojo.DeTaiKhoaLuan;
 
-public interface DeTaiService {
-    List<DeTaiKhoaLuan> getAllDeTai();
-    DeTaiKhoaLuan getDeTaiById(int id);
-    DeTaiKhoaLuan addDeTai(DeTaiKhoaLuan deTai);
-    void deleteDeTai(int id);
+public interface HoiDongService {
+    List<HoiDong> getAllHoiDong();
+    HoiDong getById(int id);
+    HoiDong addHoiDong(HoiDong hoiDong);
+    void deleteHoiDong(int id);
 }
