@@ -18,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import com.tqp.formatters.HoiDongFormatter;
 
 @Configuration
 @EnableWebMvc
@@ -25,6 +26,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = {
     "com.tqp.controllers",
     "com.tqp.repositories",   // cần tạo nếu dùng DAO
+    "com.tqp.repositories.impl",
+    "com.tqp.formatters",
     "com.tqp.services",      // cần tạo nếu có Service
     "com.tqp.services.impl",
     "com.tqp.pojo"
@@ -38,8 +41,7 @@ public class WebAppContextConfigs implements WebMvcConfigurer{
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        // registry.addFormatter(new YourCustomFormatter());
-        // Tạm thời chưa dùng formatter riêng
+        registry.addFormatter(new HoiDongFormatter());
     }
 
     @Override

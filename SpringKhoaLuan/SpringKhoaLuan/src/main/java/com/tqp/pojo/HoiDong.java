@@ -12,30 +12,37 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "deTaiKhoaLuans")
+@Table(name = "hoiDongs")
 
-public class DeTaiKhoaLuan implements Serializable{
+public class HoiDong implements Serializable{
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @Column(name = "name", length = 100)
+    private String name;
 
-    public DeTaiKhoaLuan() {}
+    @Column(name = "status")
+    private String status;
 
-    public DeTaiKhoaLuan(Integer id, String title) {
+    public HoiDong() {}
+
+    public HoiDong(Integer id, String name, String status) {
         this.id = id;
-        this.title = title;
+        this.name = name;
+        this.status = status;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
     @Override
     public int hashCode() {
@@ -44,14 +51,13 @@ public class DeTaiKhoaLuan implements Serializable{
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DeTaiKhoaLuan)) return false;
-        DeTaiKhoaLuan other = (DeTaiKhoaLuan) obj;
+        if (!(obj instanceof HoiDong)) return false;
+        HoiDong other = (HoiDong) obj;
         return this.id != null && this.id.equals(other.id);
     }
 
     @Override
     public String toString() {
-        return "DeTaiKhoaLuan[ id=" + id + " ]";
+        return "HoiDong[ id=" + id + " ]";
     }
-    
 }
