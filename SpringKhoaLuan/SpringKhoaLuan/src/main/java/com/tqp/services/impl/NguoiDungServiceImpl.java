@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class NguoiDungServiceImpl implements NguoiDungService{
@@ -31,6 +33,18 @@ public class NguoiDungServiceImpl implements NguoiDungService{
     @Override
     public NguoiDung addUser(NguoiDung user) {
         return nguoiDungRepo.addUser(user);
+    }
+
+    @Override
+    public NguoiDung addUser(Map<String, String> params, MultipartFile avatar) {
+        NguoiDung u = new NguoiDung();
+        u.setUsername(params.get("username"));
+        u.setPassword(params.get("password")); // sẽ mã hóa ở repo
+        u.setEmail(params.get("email")); // nếu có thêm trường email
+        u.setRole("ROLE_USER"); // hoặc ROLE_ADMIN nếu cần
+
+        // Nếu bạn dùng avatar cloudinary thì xử lý upload tại đây (có thể để sau)
+        return nguoiDungRepo.addUser(u);
     }
 
     @Override
