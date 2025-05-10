@@ -16,6 +16,7 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[] {
+            SpringSecurityConfigs.class,
             HibernateConfigs.class, // bạn sẽ tạo file này để cấu hình kết nối DB
             ThymeleafConfig.class
         };

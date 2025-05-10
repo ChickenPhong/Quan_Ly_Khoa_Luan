@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản trị Khóa luận</title>
+    <th:block th:replace="base :: styles"></th:block>
+</head>
+<body>
+    <div th:replace="base :: header"></div>
+
+    <main class="container">
+        <h1 class="text-center text-info mt-1">QUẢN TRỊ KHÓA LUẬN</h1>
+
+        <form th:action="@{/khoaluan/add}" th:object="${khoaLuan}" method="post">
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" th:field="*{tenDeTai}" placeholder="Tên đề tài khóa luận" required />
+            </div>
+
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" th:field="*{sinhVienThucHien}" placeholder="Sinh viên thực hiện" required />
+            </div>
+
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" th:field="*{giangVienHuongDan1}" placeholder="GV Hướng dẫn 1" required />
+            </div>
+
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" th:field="*{giangVienHuongDan2}" placeholder="GV Hướng dẫn 2 (nếu có)" />
+            </div>
+
+            <div class="mb-3 mt-3">
+                <input type="text" class="form-control" th:field="*{giangVienPhanBien}" placeholder="GV Phản biện" />
+            </div>
+
+            <input type="hidden" th:field="*{id}" />
+
+            <button type="submit" class="btn btn-primary" th:if="${khoaLuan.id == null}">Thêm đề tài</button>
+            <button type="submit" class="btn btn-primary" th:unless="${khoaLuan.id == null}">Cập nhật đề tài</button>
+        </form>
+    </main>
+
+    <div th:replace="base :: footer"></div>
+</body>
+</html>
+
