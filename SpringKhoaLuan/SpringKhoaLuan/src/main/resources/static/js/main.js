@@ -15,3 +15,4 @@ function deleteKhoaLuan(endpoint, id) {
         });
     }
 }
+

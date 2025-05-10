@@ -25,9 +25,6 @@ public class ThymeleafConfig {
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode("HTML");
         templateResolver.setCharacterEncoding("UTF-8");
-        templateResolver.setCheckExistence(true); // giúp báo lỗi thiếu template rõ ràng
-        templateResolver.setOrder(1); // Đảm bảo ưu tiên nếu có nhiều resolver
-        templateResolver.setCacheable(false); // Tạm tắt cache để tránh lỗi dev
         return templateResolver;
     }
 

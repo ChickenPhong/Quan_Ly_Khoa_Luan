@@ -11,13 +11,16 @@ package com.tqp.services.impl;
 import com.tqp.pojo.NguoiDung;
 import com.tqp.repositories.NguoiDungRepository;
 import com.tqp.services.NguoiDungService;
-import java.util.Collections;
+import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
-import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
@@ -41,7 +44,7 @@ public class NguoiDungServiceImpl implements NguoiDungService{
         u.setUsername(params.get("username"));
         u.setPassword(params.get("password")); // sẽ mã hóa ở repo
         u.setEmail(params.get("email")); // nếu có thêm trường email
-        u.setRole("ROLE_USER"); // hoặc ROLE_ADMIN nếu cần
+        u.setRole("giaovu"); // hoặc ROLE_ADMIN nếu cần
 
         // Nếu bạn dùng avatar cloudinary thì xử lý upload tại đây (có thể để sau)
         return nguoiDungRepo.addUser(u);
@@ -55,10 +58,14 @@ public class NguoiDungServiceImpl implements NguoiDungService{
     // Method Spring Security sẽ gọi khi user submit login
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println(">>> loadUserByUsername: " + username); // 👈 THÊM DÒNG NÀY
         NguoiDung u = nguoiDungRepo.getByUsername(username);
         if (u == null)
             throw new UsernameNotFoundException("Không tìm thấy user");
 
-        return new User(u.getUsername(), u.getPassword(), Collections.emptyList());
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + u.getRole())); // VD: ROLE_giaovu
+
+        return new User(u.getUsername(), u.getPassword(), authorities);
     }
 }
