@@ -190,12 +190,12 @@ CREATE TABLE `nguoidungs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','giaovu','giangvien','sinhvien') NOT NULL,
+  `role` varchar(50) DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   `email` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,6 +204,7 @@ CREATE TABLE `nguoidungs` (
 
 LOCK TABLES `nguoidungs` WRITE;
 /*!40000 ALTER TABLE `nguoidungs` DISABLE KEYS */;
+INSERT INTO `nguoidungs` VALUES (1,'giaovu1','$2a$10$ZULNKuUc6DWG1EIfU4gU9.5KLFKQW5mJ5l7zENa3s2zfqexjJxJgK','ROLE_GIAOVU','avatar.png','giaovu1@example.com'),(2,'admin','$2a$10$5X9k5N1sTc1/CjVH5XJoje3QMYijH3ETpgkox00R0MdPaJPPrf7wO','ROLE_ADMIN','admin.png','admin1@example.com'),(3,'phong','$2a$10$h0FlkZiCoMnnEn37UpTCr.ExAdXMch68NupLUpJl3Pv0WYSUzb8Ui','ROLE_GIANGVIEN','https://res.cloudinary.com/dp4fipzce/image/upload/v1746929245/af3rt3tonvfgtrwil2d7.jpg','tqphong2004@gmail.com');
 /*!40000 ALTER TABLE `nguoidungs` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,4 +302,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-08 17:11:56
+-- Dump completed on 2025-05-11  9:10:34

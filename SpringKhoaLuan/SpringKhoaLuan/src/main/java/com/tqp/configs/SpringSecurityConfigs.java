@@ -43,9 +43,9 @@ public class SpringSecurityConfigs {
     public Cloudinary cloudinary() {
         Cloudinary cloudinary
                 = new Cloudinary(ObjectUtils.asMap(
-                        "cloud_name", "dxxwcby8l",
-                        "api_key", "448651448423589",
-                        "api_secret", "ftGud0r1TTqp0CGp5tjwNmkAm-A",
+                        "cloud_name", "dp4fipzce",
+                        "api_key", "228386996632957",
+                        "api_secret", "k8HDLZbie2T8UWvC70S7f-SukGY",
                         "secure", true));
         
         return cloudinary;

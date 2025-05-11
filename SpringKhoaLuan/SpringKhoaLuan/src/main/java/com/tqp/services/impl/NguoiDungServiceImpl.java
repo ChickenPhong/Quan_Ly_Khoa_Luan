@@ -4,29 +4,39 @@
  */
 package com.tqp.services.impl;
 
-/**
- *
- * @author Tran Quoc Phong
- */
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.tqp.pojo.NguoiDung;
 import com.tqp.repositories.NguoiDungRepository;
 import com.tqp.services.NguoiDungService;
-import java.util.Map;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
-@Service
+@Service("userDetailService")
+@Transactional
 public class NguoiDungServiceImpl implements NguoiDungService{
     @Autowired
     private NguoiDungRepository nguoiDungRepo;
+
+    @Autowired
+    private BCryptPasswordEncoder passEncoder;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @Override
     public NguoiDung getByUsername(String username) {
@@ -34,7 +44,21 @@ public class NguoiDungServiceImpl implements NguoiDungService{
     }
 
     @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        NguoiDung u = nguoiDungRepo.getByUsername(username);
+        if (u == null)
+            throw new UsernameNotFoundException("Không tìm thấy user");
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority(u.getRole())); // Ex: ROLE_ADMIN
+
+        return new org.springframework.security.core.userdetails.User(
+                u.getUsername(), u.getPassword(), authorities);
+    }
+
+    @Override
     public NguoiDung addUser(NguoiDung user) {
+        user.setPassword(passEncoder.encode(user.getPassword())); // mã hóa
         return nguoiDungRepo.addUser(user);
     }
 
@@ -42,30 +66,31 @@ public class NguoiDungServiceImpl implements NguoiDungService{
     public NguoiDung addUser(Map<String, String> params, MultipartFile avatar) {
         NguoiDung u = new NguoiDung();
         u.setUsername(params.get("username"));
-        u.setPassword(params.get("password")); // sẽ mã hóa ở repo
-        u.setEmail(params.get("email")); // nếu có thêm trường email
-        u.setRole("giaovu"); // hoặc ROLE_ADMIN nếu cần
+        u.setPassword(passEncoder.encode(params.get("password"))); // mã hóa mật khẩu
+        u.setEmail(params.get("email"));
+        u.setRole(params.get("role"));
 
-        // Nếu bạn dùng avatar cloudinary thì xử lý upload tại đây (có thể để sau)
+        if (avatar != null && !avatar.isEmpty()) {
+            try {
+                Map res = cloudinary.uploader().upload(avatar.getBytes(),
+                        ObjectUtils.asMap("resource_type", "auto"));
+                u.setAvatar(res.get("secure_url").toString());
+            } catch (IOException ex) {
+                Logger.getLogger(NguoiDungServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
         return nguoiDungRepo.addUser(u);
     }
 
     @Override
     public boolean authenticate(String username, String rawPassword) {
-        return nguoiDungRepo.authenticate(username, rawPassword);
+        NguoiDung u = this.getByUsername(username);
+        return u != null && passEncoder.matches(rawPassword, u.getPassword());
     }
-
-    // Method Spring Security sẽ gọi khi user submit login
+    
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        System.out.println(">>> loadUserByUsername: " + username); // 👈 THÊM DÒNG NÀY
-        NguoiDung u = nguoiDungRepo.getByUsername(username);
-        if (u == null)
-            throw new UsernameNotFoundException("Không tìm thấy user");
-
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + u.getRole())); // VD: ROLE_giaovu
-
-        return new User(u.getUsername(), u.getPassword(), authorities);
+    public List<NguoiDung> getAllUsers() {
+        return nguoiDungRepo.getAllUsers();
     }
 }

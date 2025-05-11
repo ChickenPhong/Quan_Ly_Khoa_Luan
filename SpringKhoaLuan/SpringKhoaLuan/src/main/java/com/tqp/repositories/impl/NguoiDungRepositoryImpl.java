@@ -18,6 +18,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -53,5 +54,12 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
     public boolean authenticate(String username, String rawPassword) {
         NguoiDung u = this.getByUsername(username);
         return u != null && passwordEncoder.matches(rawPassword, u.getPassword());
+    }
+    
+    @Override
+    public List<NguoiDung> getAllUsers() {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query query = session.createQuery("FROM NguoiDung");
+        return query.getResultList();
     }
 }

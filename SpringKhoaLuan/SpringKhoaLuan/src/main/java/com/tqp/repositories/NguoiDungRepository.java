@@ -9,9 +9,11 @@ package com.tqp.repositories;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.NguoiDung;
+import java.util.List;
 
 public interface NguoiDungRepository {
     NguoiDung getByUsername(String username);
     NguoiDung addUser(NguoiDung u);
     boolean authenticate(String username, String rawPassword);
+    List<NguoiDung> getAllUsers();
 }

@@ -30,7 +30,7 @@
                         <a class="nav-link" th:href="@{/detai}" sec:authorize="hasRole('ROLE_GIAOVU')">Đề tài</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/nguoidung}" sec:authorize="hasRole('ROLE_ADMIN')">Người dùng</a>
+                        <a class="nav-link" th:href="@{/admin/add-user}" sec:authorize="hasRole('ROLE_ADMIN')">Thêm người dùng</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/hoidong}" sec:authorize="hasRole('ROLE_GIAOVU')">Hội đồng</a>
