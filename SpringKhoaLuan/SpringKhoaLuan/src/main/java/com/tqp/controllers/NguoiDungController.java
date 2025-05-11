@@ -19,11 +19,17 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.tqp.services.NguoiDungService;
+import com.tqp.services.DeTaiService;
+import com.tqp.pojo.DeTaiKhoaLuan;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 public class NguoiDungController {
     @Autowired
     private NguoiDungService nguoiDungService;
+    
+    @Autowired
+    private DeTaiService deTaiService;
     
     // Giao diện đăng nhập
     @GetMapping("/login")
@@ -36,6 +42,21 @@ public class NguoiDungController {
     public String adminView(Model model) {
         model.addAttribute("users", nguoiDungService.getAllUsers());
         return "admin"; // Trả về admin.html
+    }
+    
+    // Giao diện dành cho GIAOVU
+    @GetMapping("/khoaluan")
+    public String giaoVuView(Model model) {
+        model.addAttribute("khoaLuan", new DeTaiKhoaLuan()); // <- DeTai là entity của bạn
+        model.addAttribute("allDeTai", deTaiService.getAllDeTai()); // Truyền danh sách đề tài vào model
+        return "khoaluan";
+    }
+
+
+    // Giao diện dành cho GIANGVIEN
+    @GetMapping("/detai")
+    public String giangVienView() {
+        return "detai"; // Nhớ tạo thêm file detai.html nếu chưa có
     }
     
     @GetMapping("/admin/add-user")
@@ -60,6 +81,34 @@ public class NguoiDungController {
 
         redirectAttrs.addFlashAttribute("message", "Thêm người dùng thành công!");
         return "redirect:/admin";
+    }
+    
+    @PostMapping("/admin/delete-user")
+    public String deleteUser(@RequestParam("userId") int id, RedirectAttributes redirectAttrs) {
+        boolean result = nguoiDungService.deleteUser(id);
+        if (result)
+            redirectAttrs.addFlashAttribute("message", "Xóa người dùng thành công!");
+        else
+            redirectAttrs.addFlashAttribute("message", "Xóa người dùng thất bại!");
+        return "redirect:/admin";
+    }
+    
+    @PostMapping("/khoaluan/add")
+    public String addDeTai(@ModelAttribute("khoaLuan") DeTaiKhoaLuan khoaLuan) {
+        deTaiService.addDeTai(khoaLuan);  // Bạn cần inject service này
+        return "redirect:/khoaluan";  // Redirect về danh sách
+    }
+    
+     // Xóa đề tài
+    @PostMapping("/khoaluan/delete")
+    public String deleteDeTai(@RequestParam("id") int id, RedirectAttributes redirectAttrs) {
+        boolean result = deTaiService.deleteDeTai(id);
+        if (result) {
+            redirectAttrs.addFlashAttribute("message", "Xóa đề tài thành công!");
+        } else {
+            redirectAttrs.addFlashAttribute("message", "Xóa đề tài thất bại!");
+        }
+        return "redirect:/khoaluan";  // Quay lại trang danh sách đề tài
     }
     
     public String showAddUserForm() {

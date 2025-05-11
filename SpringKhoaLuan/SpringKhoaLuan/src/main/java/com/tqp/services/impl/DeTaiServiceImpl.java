@@ -35,7 +35,12 @@ public class DeTaiServiceImpl implements DeTaiService{
     }
 
     @Override
-    public void deleteDeTai(int id) {
-        deTaiRepo.delete(id);
+    public boolean deleteDeTai(int id) {
+        try {
+            deTaiRepo.delete(id);  // Xóa theo id
+            return true;  // Nếu thành công, trả về true
+        } catch (Exception e) {
+            return false;  // Nếu có lỗi, trả về false
+        }
     }
 }

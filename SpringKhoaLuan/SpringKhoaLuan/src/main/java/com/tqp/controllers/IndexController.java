@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -31,12 +32,30 @@ public class IndexController {
             String username = authentication.getName();
             NguoiDung user = nguoiDungService.getByUsername(username);
 
-            if (user != null && "ROLE_ADMIN".equals(user.getRole())) {
-                return "redirect:/admin"; // Chuyển hướng nếu là admin
+            if (user != null) {
+                String role = user.getRole().trim();
+
+                if (role.equalsIgnoreCase("ROLE_ADMIN"))
+                    return "redirect:/admin";
+                else if (role.equalsIgnoreCase("ROLE_GIAOVU"))
+                    return "redirect:/khoaluan";
+                else if (role.equalsIgnoreCase("ROLE_GIANGVIEN"))
+                    return "redirect:/detai";
+                else if (role.equalsIgnoreCase("ROLE_SINHVIEN"))
+                    return "redirect:/sinhvien";
             }
+            System.out.println("Redirecting user with role: " + user.getRole());
+            System.out.println("Login user: " + authentication.getName());
+            System.out.println("Role: " + user.getRole());
         }
+        
 
         model.addAttribute("deTais", deTaiService.getAllDeTai());
-        return "index"; // Giao diện mặc định cho user khác
+        return "index";
+    }
+    
+    @GetMapping("/sinhvien")
+    public String sinhVienView() {
+        return "index"; // hoặc tạo file sinhvien.html
     }
 }

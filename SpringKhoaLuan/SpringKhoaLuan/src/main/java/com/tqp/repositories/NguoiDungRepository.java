@@ -14,6 +14,7 @@ import java.util.List;
 public interface NguoiDungRepository {
     NguoiDung getByUsername(String username);
     NguoiDung addUser(NguoiDung u);
+    boolean deleteUser(int id);
     boolean authenticate(String username, String rawPassword);
     List<NguoiDung> getAllUsers();
 }

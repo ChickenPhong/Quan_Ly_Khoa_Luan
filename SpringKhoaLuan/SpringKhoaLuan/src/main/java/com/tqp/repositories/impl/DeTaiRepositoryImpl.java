@@ -46,11 +46,12 @@ public class DeTaiRepositoryImpl implements DeTaiRepository{
     }
 
     @Override
-    public void delete(int id) {
+    public boolean delete(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         DeTaiKhoaLuan d = s.get(DeTaiKhoaLuan.class, id);
         if (d != null) {
             s.delete(d);
         }
+        return false;
     }
 }

@@ -25,10 +25,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-@Service("userDetailService")
+@Service
+@Primary
 @Transactional
-public class NguoiDungServiceImpl implements NguoiDungService{
+public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsService{
     @Autowired
     private NguoiDungRepository nguoiDungRepo;
 
@@ -50,6 +53,8 @@ public class NguoiDungServiceImpl implements NguoiDungService{
             throw new UsernameNotFoundException("Không tìm thấy user");
 
         Set<GrantedAuthority> authorities = new HashSet<>();
+        System.out.println("USERNAME: " + u.getUsername());
+        System.out.println("ROLE: [" + u.getRole() + "]");
         authorities.add(new SimpleGrantedAuthority(u.getRole())); // Ex: ROLE_ADMIN
 
         return new org.springframework.security.core.userdetails.User(
@@ -82,10 +87,26 @@ public class NguoiDungServiceImpl implements NguoiDungService{
 
         return nguoiDungRepo.addUser(u);
     }
+    
+    @Override
+    public boolean deleteUser(int id) {
+        return nguoiDungRepo.deleteUser(id);
+    }
 
     @Override
     public boolean authenticate(String username, String rawPassword) {
         NguoiDung u = this.getByUsername(username);
+        if (u != null) {
+            System.out.println(" Testing login:");
+            System.out.println(" - Username: " + u.getUsername());
+            System.out.println(" - Raw password: " + rawPassword);
+            System.out.println(" - Stored hash: " + u.getPassword());
+            System.out.println(" - Password match: " + passEncoder.matches(rawPassword, u.getPassword()));
+            
+            System.out.println("Raw: " + rawPassword);
+            System.out.println("Encoded: " + u.getPassword());
+            System.out.println("Match: " + passEncoder.matches(rawPassword, u.getPassword()));
+        }
         return u != null && passEncoder.matches(rawPassword, u.getPassword());
     }
     

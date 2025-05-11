@@ -15,5 +15,5 @@ public interface DeTaiRepository {
     List<DeTaiKhoaLuan> getAll();
     DeTaiKhoaLuan getById(int id);
     DeTaiKhoaLuan save(DeTaiKhoaLuan deTai);
-    void delete(int id);
+    boolean delete(int id);
 }

@@ -19,6 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +35,10 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 })
 
 public class SpringSecurityConfigs {
+    
+    @Autowired
+    private UserDetailsService userDetailsService;
+    
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -56,19 +65,34 @@ public class SpringSecurityConfigs {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .requestMatchers("/khoaluan/**").hasAuthority("ROLE_GIAOVU")
+                .requestMatchers("/detai/**").hasAuthority("ROLE_GIANGVIEN")
                 .anyRequest().authenticated()
+                
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true)
+                .loginProcessingUrl("/login") // Đảm bảo POST tới /login hoạt động
+                .defaultSuccessUrl("/", true) // Redirect tới "/" sau login thành công
+                .failureHandler((request, response, exception) -> {
+                    exception.printStackTrace();
+                    response.sendRedirect("/login?error=true");
+                })
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
             );
 
         return http.build();
     }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
 }
+

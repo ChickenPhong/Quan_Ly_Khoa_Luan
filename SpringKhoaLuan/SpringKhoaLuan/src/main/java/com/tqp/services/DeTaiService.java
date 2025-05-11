@@ -15,5 +15,5 @@ public interface DeTaiService {
     List<DeTaiKhoaLuan> getAllDeTai();
     DeTaiKhoaLuan getDeTaiById(int id);
     DeTaiKhoaLuan addDeTai(DeTaiKhoaLuan deTai);
-    void deleteDeTai(int id);
+    boolean deleteDeTai(int id);
 }

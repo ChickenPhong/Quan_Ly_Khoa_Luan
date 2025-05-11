@@ -35,20 +35,30 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="u, iterStat : ${users}">
-                    <td th:text="${iterStat.index + 1}"></td>
-                    <td th:text="${u.username}"></td>
-                    <td th:text="${u.email}"></td>
-                    <td th:text="${u.role}"></td>
-                    <td>
-                        <input type="text" th:value="${u.password}" class="form-control form-control-sm" readonly style="font-size: 0.75rem;" />
-                    </td>
-                    <td>
-                        <img th:if="${u.avatar}" th:src="${u.avatar}" alt="Avatar" width="50" height="50" class="rounded-circle"/>
-                        <span th:if="${u.avatar == null}">No avatar</span>
-                    </td>
-                </tr>
+            <tr th:each="u, iterStat : ${users}">
+                <td th:text="${iterStat.index + 1}"></td>
+                <td th:text="${u.username}"></td>
+                <td th:text="${u.email}"></td>
+                <td th:text="${u.role}"></td>
+                <td>
+                    <input type="text" th:value="${u.password}" class="form-control form-control-sm" readonly style="font-size: 0.75rem;" />
+                </td>
+                <td>
+                    <img th:if="${u.avatar}" th:src="${u.avatar}" alt="Avatar" width="50" height="50" class="rounded-circle"/>
+                    <span th:if="${u.avatar == null}">No avatar</span>
+                </td>
+                <td>
+                    <form th:action="@{/admin/delete-user}" method="post">
+                        <input type="hidden" name="userId" th:value="${u.id}" />
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?')">
+                            Xóa
+                        </button>
+                    </form>
+                </td>
+            </tr>
             </tbody>
+
         </table>
     </div>
 

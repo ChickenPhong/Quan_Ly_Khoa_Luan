@@ -44,11 +44,23 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
 
     @Override
     public NguoiDung addUser(NguoiDung u) {
-        u.setPassword(passwordEncoder.encode(u.getPassword()));
+        //u.setPassword(passwordEncoder.encode(u.getPassword()));
         Session s = this.factory.getObject().getCurrentSession();
         s.persist(u);
         return u;
     }
+    
+    @Override
+    public boolean deleteUser(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        NguoiDung u = session.get(NguoiDung.class, id);
+        if (u != null) {
+            session.delete(u);
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean authenticate(String username, String rawPassword) {
