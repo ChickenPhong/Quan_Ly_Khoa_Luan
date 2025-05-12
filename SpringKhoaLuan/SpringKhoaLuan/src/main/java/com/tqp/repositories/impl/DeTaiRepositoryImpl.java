@@ -33,6 +33,14 @@ public class DeTaiRepositoryImpl implements DeTaiRepository{
     }
 
     @Override
+    public List<DeTaiKhoaLuan> getByKhoa(String khoa) {
+        Session session = factory.getObject().getCurrentSession();
+        Query q = session.createQuery("FROM DeTaiKhoaLuan WHERE khoa = :khoa", DeTaiKhoaLuan.class);
+        q.setParameter("khoa", khoa);
+        return q.getResultList();
+    }
+
+    @Override
     public DeTaiKhoaLuan getById(int id) {
         Session s = this.factory.getObject().getCurrentSession();
         return s.get(DeTaiKhoaLuan.class, id);

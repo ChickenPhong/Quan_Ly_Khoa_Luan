@@ -44,6 +44,11 @@ public class NguoiDung implements Serializable{
     @Column(name = "email")
     private String email;
 
+    @Column(name = "khoa")
+    private String khoa;
+
+    @Column(name = "khoaHoc")
+    private String khoaHoc;
     // Constructors
     public NguoiDung() {}
     public NguoiDung(Integer id) { this.id = id; }
@@ -67,6 +72,21 @@ public class NguoiDung implements Serializable{
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 
+    public String getKhoa() {
+    return khoa;
+    }
+
+    public void setKhoa(String khoa) {
+        this.khoa = khoa;
+    }
+
+    public String getKhoaHoc() {
+        return khoaHoc;
+    }
+
+    public void setKhoaHoc(String khoaHoc) {
+        this.khoaHoc = khoaHoc;
+    }
     // equals, hashCode, toString
     @Override
     public int hashCode() {

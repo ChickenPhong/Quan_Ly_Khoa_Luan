@@ -75,10 +75,7 @@ public class SpringSecurityConfigs {
                 .loginPage("/login")
                 .loginProcessingUrl("/login") // Đảm bảo POST tới /login hoạt động
                 .defaultSuccessUrl("/", true) // Redirect tới "/" sau login thành công
-                .failureHandler((request, response, exception) -> {
-                    exception.printStackTrace();
-                    response.sendRedirect("/login?error=true");
-                })
+                .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout

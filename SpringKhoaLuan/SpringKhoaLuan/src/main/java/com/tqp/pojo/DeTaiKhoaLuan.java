@@ -23,6 +23,7 @@ public class DeTaiKhoaLuan implements Serializable{
 
     @Column(name = "title", nullable = false)
     private String title;
+    private String khoa;
 
     public DeTaiKhoaLuan() {}
 
@@ -36,6 +37,14 @@ public class DeTaiKhoaLuan implements Serializable{
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+    
+    public String getKhoa() {
+        return khoa;
+    }
+
+    public void setKhoa(String khoa) {
+        this.khoa = khoa;
+    }
 
     @Override
     public int hashCode() {

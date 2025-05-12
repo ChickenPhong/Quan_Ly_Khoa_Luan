@@ -73,6 +73,8 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
         u.setUsername(params.get("username"));
         u.setPassword(passEncoder.encode(params.get("password"))); // mã hóa mật khẩu
         u.setEmail(params.get("email"));
+        u.setKhoa(params.get("khoa"));
+        u.setKhoaHoc(params.get("khoaHoc"));
         u.setRole(params.get("role"));
 
         if (avatar != null && !avatar.isEmpty()) {

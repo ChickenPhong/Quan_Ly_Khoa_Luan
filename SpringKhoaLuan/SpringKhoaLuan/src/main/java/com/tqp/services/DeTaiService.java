@@ -13,6 +13,7 @@ import com.tqp.pojo.DeTaiKhoaLuan;
 
 public interface DeTaiService {
     List<DeTaiKhoaLuan> getAllDeTai();
+    List<DeTaiKhoaLuan> getByKhoa(String khoa);
     DeTaiKhoaLuan getDeTaiById(int id);
     DeTaiKhoaLuan addDeTai(DeTaiKhoaLuan deTai);
     boolean deleteDeTai(int id);

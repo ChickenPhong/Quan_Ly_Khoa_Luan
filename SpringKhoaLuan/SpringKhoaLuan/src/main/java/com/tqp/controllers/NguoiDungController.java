@@ -22,6 +22,7 @@ import com.tqp.services.NguoiDungService;
 import com.tqp.services.DeTaiService;
 import com.tqp.pojo.DeTaiKhoaLuan;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import java.security.Principal;
 
 @Controller
 public class NguoiDungController {
@@ -46,9 +47,21 @@ public class NguoiDungController {
     
     // Giao diện dành cho GIAOVU
     @GetMapping("/khoaluan")
-    public String giaoVuView(Model model) {
-        model.addAttribute("khoaLuan", new DeTaiKhoaLuan()); // <- DeTai là entity của bạn
-        model.addAttribute("allDeTai", deTaiService.getAllDeTai()); // Truyền danh sách đề tài vào model
+    public String giaoVuView(Model model, Principal principal) {
+        // Lấy username từ người dùng đăng nhập
+        String username = principal.getName();
+
+        // Lấy thông tin người dùng từ username
+        var user = nguoiDungService.getByUsername(username);
+
+        // Nếu là GIAOVU thì lọc theo khoa, còn lại thì hiện toàn bộ
+        if ("ROLE_GIAOVU".equals(user.getRole())) {
+            model.addAttribute("allDeTai", deTaiService.getByKhoa(user.getKhoa()));
+        } else {
+            model.addAttribute("allDeTai", deTaiService.getAllDeTai());
+        }
+
+        model.addAttribute("khoaLuan", new DeTaiKhoaLuan());
         return "khoaluan";
     }
 
@@ -70,11 +83,15 @@ public class NguoiDungController {
                           @RequestParam("email") String email,
                           @RequestParam("role") String role,
                           @RequestParam("avatar") MultipartFile avatar,
+                          @RequestParam(name = "khoa", required = false) String khoa,
+                          @RequestParam(name = "khoaHoc", required = false) String khoaHoc,
                           RedirectAttributes redirectAttrs) {
         Map<String, String> params = new HashMap<>();
         params.put("username", username);
         params.put("password", password);
         params.put("email", email);
+        params.put("khoa", role.equals("admin") ? null : khoa);
+        params.put("khoaHoc", role.equals("sinhvien") ? khoaHoc : null);
         params.put("role", role);
         
         nguoiDungService.addUser(params, avatar);
@@ -94,10 +111,16 @@ public class NguoiDungController {
     }
     
     @PostMapping("/khoaluan/add")
-    public String addDeTai(@ModelAttribute("khoaLuan") DeTaiKhoaLuan khoaLuan) {
-        deTaiService.addDeTai(khoaLuan);  // Bạn cần inject service này
-        return "redirect:/khoaluan";  // Redirect về danh sách
+    public String addDeTai(@ModelAttribute("khoaLuan") DeTaiKhoaLuan khoaLuan, Principal principal) {
+    var user = nguoiDungService.getByUsername(principal.getName());
+
+    if ("ROLE_GIAOVU".equals(user.getRole())) {
+        khoaLuan.setKhoa(user.getKhoa()); // Gán khoa của giáo vụ
     }
+
+    deTaiService.addDeTai(khoaLuan);
+    return "redirect:/khoaluan";
+}
     
      // Xóa đề tài
     @PostMapping("/khoaluan/delete")
