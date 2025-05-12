@@ -40,7 +40,7 @@ public class IndexController {
                 else if (role.equalsIgnoreCase("ROLE_GIAOVU"))
                     return "redirect:/khoaluan";
                 else if (role.equalsIgnoreCase("ROLE_GIANGVIEN"))
-                    return "redirect:/detai";
+                    return "redirect:/giangvien";
                 else if (role.equalsIgnoreCase("ROLE_SINHVIEN"))
                     return "redirect:/sinhvien";
             }
@@ -52,10 +52,5 @@ public class IndexController {
 
         model.addAttribute("deTais", deTaiService.getAllDeTai());
         return "index";
-    }
-    
-    @GetMapping("/sinhvien")
-    public String sinhVienView() {
-        return "index"; // hoặc tạo file sinhvien.html
     }
 }

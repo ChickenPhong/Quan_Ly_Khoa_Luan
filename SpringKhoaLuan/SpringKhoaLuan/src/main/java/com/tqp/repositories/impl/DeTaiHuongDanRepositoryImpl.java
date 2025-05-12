@@ -51,4 +51,21 @@ public class DeTaiHuongDanRepositoryImpl implements DeTaiHuongDanRepository{
         if (d != null)
             s.delete(d);
     }
+    
+    @Override
+    public DeTaiKhoaLuan_GiangVienHuongDan findByDeTaiId(int deTaiId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM DeTaiKhoaLuan_GiangVienHuongDan WHERE deTaiKhoaLuanId = :id", DeTaiKhoaLuan_GiangVienHuongDan.class);
+        q.setParameter("id", deTaiId);
+        List<DeTaiKhoaLuan_GiangVienHuongDan> result = q.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+    
+    @Override
+    public List<DeTaiKhoaLuan_GiangVienHuongDan> findAllByDeTaiId(int deTaiId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM DeTaiKhoaLuan_GiangVienHuongDan WHERE deTaiKhoaLuanId = :id", DeTaiKhoaLuan_GiangVienHuongDan.class);
+        q.setParameter("id", deTaiId);
+        return q.getResultList();
+    }
 }

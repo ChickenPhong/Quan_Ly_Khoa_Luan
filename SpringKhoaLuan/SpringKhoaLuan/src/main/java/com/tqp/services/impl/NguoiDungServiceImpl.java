@@ -25,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import org.hibernate.Session;
 import org.springframework.context.annotation.Primary;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Service
@@ -40,10 +42,18 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
 
     @Autowired
     private Cloudinary cloudinary;
+    
+    @Autowired
+    private LocalSessionFactoryBean factory;
 
     @Override
     public NguoiDung getByUsername(String username) {
         return nguoiDungRepo.getByUsername(username);
+    }
+    
+    @Override
+    public NguoiDung getById(int id) {
+        return nguoiDungRepo.getById(id);
     }
 
     @Override
@@ -115,5 +125,16 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
     @Override
     public List<NguoiDung> getAllUsers() {
         return nguoiDungRepo.getAllUsers();
+    }
+    
+    @Override
+    public List<NguoiDung> getGiangVienByKhoa(String khoa) {
+        return nguoiDungRepo.getGiangVienByKhoa(khoa);
+    }
+
+    // Từ SinhVienService gộp vào
+    @Override
+    public List<NguoiDung> getSinhVienByKhoaVaKhoaHoc(String khoa, String khoaHoc) {
+        return nguoiDungRepo.getSinhVienByKhoaVaKhoaHoc(khoa, khoaHoc);
     }
 }

@@ -39,4 +39,22 @@ public class DeTaiSinhVienServiceImpl implements DeTaiSinhVienService{
     public void delete(int id) {
         repo.delete(id);
     }
+    
+    @Override
+    public void assign(int sinhVienId, int deTaiId) {
+        DeTaiKhoaLuan_SinhVien dtsv = new DeTaiKhoaLuan_SinhVien();
+        dtsv.setSinhVienId(sinhVienId);
+        dtsv.setDeTaiKhoaLuanId(deTaiId); 
+        repo.save(dtsv);
+    }
+    
+    @Override
+    public boolean isSinhVienDaXepDeTai(int sinhVienId) {
+        return this.repo.isSinhVienDaXepDeTai(sinhVienId);
+    }
+    
+    @Override
+    public DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId) {
+        return repo.findBySinhVienId(sinhVienId);
+    }
 }

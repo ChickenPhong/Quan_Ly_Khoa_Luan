@@ -9,6 +9,7 @@ package com.tqp.services;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.DeTaiKhoaLuan_GiangVienHuongDan;
+import com.tqp.pojo.NguoiDung;
 import java.util.List;
 
 public interface DeTaiHuongDanService {
@@ -16,4 +17,9 @@ public interface DeTaiHuongDanService {
     DeTaiKhoaLuan_GiangVienHuongDan getById(int id);
     DeTaiKhoaLuan_GiangVienHuongDan add(DeTaiKhoaLuan_GiangVienHuongDan d);
     void delete(int id);
+    
+    void assign(int deTaiId, int giangVienId);
+    
+    NguoiDung findByDeTaiId(int deTaiId);
+    List<DeTaiKhoaLuan_GiangVienHuongDan> findAllByDeTaiId(int deTaiId);
 }

@@ -16,9 +16,14 @@ import java.util.List;
 
 public interface NguoiDungService extends UserDetailsService{
     NguoiDung getByUsername(String username);
+    NguoiDung getById(int id);
     NguoiDung addUser(NguoiDung user);
     NguoiDung addUser(Map<String, String> params, MultipartFile avatar);
     boolean authenticate(String username, String rawPassword);
     boolean deleteUser(int id);
     List<NguoiDung> getAllUsers();
+    
+    List<NguoiDung> getGiangVienByKhoa(String khoa);
+    // Mới gộp từ SinhVienService
+    List<NguoiDung> getSinhVienByKhoaVaKhoaHoc(String khoa, String khoaHoc);
 }

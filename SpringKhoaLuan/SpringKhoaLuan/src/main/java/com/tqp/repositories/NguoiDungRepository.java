@@ -13,8 +13,11 @@ import java.util.List;
 
 public interface NguoiDungRepository {
     NguoiDung getByUsername(String username);
+    NguoiDung getById(int id);
     NguoiDung addUser(NguoiDung u);
     boolean deleteUser(int id);
     boolean authenticate(String username, String rawPassword);
     List<NguoiDung> getAllUsers();
+    List<NguoiDung> getGiangVienByKhoa(String khoa);
+    List<NguoiDung> getSinhVienByKhoaVaKhoaHoc(String khoa, String khoaHoc);
 }

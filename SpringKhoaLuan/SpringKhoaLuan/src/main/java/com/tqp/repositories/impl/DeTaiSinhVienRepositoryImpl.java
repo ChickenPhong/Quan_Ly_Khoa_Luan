@@ -51,4 +51,22 @@ public class DeTaiSinhVienRepositoryImpl implements DeTaiSinhVienRepository{
         if (dtsv != null)
             s.delete(dtsv);
     }
+    
+    @Override
+    public boolean isSinhVienDaXepDeTai(int sinhVienId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("SELECT COUNT(*) FROM DeTaiKhoaLuan_SinhVien WHERE sinhVienId = :id");
+        q.setParameter("id", sinhVienId);
+        Long count = (Long) q.getSingleResult();
+        return count > 0;
+    }
+    
+    @Override
+    public DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM DeTaiKhoaLuan_SinhVien WHERE sinhVienId = :id", DeTaiKhoaLuan_SinhVien.class);
+        q.setParameter("id", sinhVienId);
+        List<DeTaiKhoaLuan_SinhVien> result = q.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
 }

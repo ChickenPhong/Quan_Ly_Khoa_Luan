@@ -16,4 +16,6 @@ public interface DeTaiSinhVienRepository {
     DeTaiKhoaLuan_SinhVien getById(int id);
     DeTaiKhoaLuan_SinhVien save(DeTaiKhoaLuan_SinhVien dtsv);
     void delete(int id);
+    boolean isSinhVienDaXepDeTai(int sinhVienId);
+    DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId);
 }

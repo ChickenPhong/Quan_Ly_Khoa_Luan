@@ -41,6 +41,12 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
             return null;
         }
     }
+    
+    @Override
+    public NguoiDung getById(int id) {
+        Session session = this.factory.getObject().getCurrentSession();
+        return session.get(NguoiDung.class, id);
+    }
 
     @Override
     public NguoiDung addUser(NguoiDung u) {
@@ -73,5 +79,24 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
         Session session = this.factory.getObject().getCurrentSession();
         Query query = session.createQuery("FROM NguoiDung");
         return query.getResultList();
+    }
+    
+    @Override
+    public List<NguoiDung> getGiangVienByKhoa(String khoa) {
+        Session session = factory.getObject().getCurrentSession();
+        Query query = session.createQuery("FROM NguoiDung WHERE role = 'ROLE_GIANGVIEN' AND khoa = :khoa", NguoiDung.class);
+        query.setParameter("khoa", khoa);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<NguoiDung> getSinhVienByKhoaVaKhoaHoc(String khoa, String khoaHoc) {
+        Session session = factory.getObject().getCurrentSession();
+        Query query = session.createQuery("FROM NguoiDung WHERE role = 'ROLE_SINHVIEN' AND khoa = :khoa AND khoaHoc = :khoaHoc", NguoiDung.class);
+        query.setParameter("khoa", khoa);
+        query.setParameter("khoaHoc", khoaHoc);
+        System.out.println(">>>>> Khoa: " + khoa + " | KhoaHoc: " + khoaHoc);
+        return query.getResultList();
+        
     }
 }
