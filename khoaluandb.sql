@@ -143,7 +143,7 @@ CREATE TABLE `detaikhoaluans` (
   `title` varchar(255) NOT NULL,
   `khoa` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +152,7 @@ CREATE TABLE `detaikhoaluans` (
 
 LOCK TABLES `detaikhoaluans` WRITE;
 /*!40000 ALTER TABLE `detaikhoaluans` DISABLE KEYS */;
-INSERT INTO `detaikhoaluans` VALUES (1,'Quản lý khách sạn','Công nghệ thông tin'),(2,'Quản lý bãi đỗ xe','Công nghệ thông tin'),(3,'Quản lý thư viện','Công nghệ thông tin');
+INSERT INTO `detaikhoaluans` VALUES (1,'Quản lý khách sạn','Công nghệ thông tin'),(2,'Quản lý bãi đỗ xe','Công nghệ thông tin'),(3,'Quản lý thư viện','Công nghệ thông tin'),(4,'Quản lý cửa hàng tiện lợi','Công nghệ thông tin');
 /*!40000 ALTER TABLE `detaikhoaluans` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -227,6 +227,7 @@ CREATE TABLE `phanconggiangvienphanbiens` (
   `deTaiKhoaLuan_id` int DEFAULT NULL,
   `giangVienPhanBien_id` int DEFAULT NULL,
   `thongBao_sent` tinyint(1) DEFAULT '0',
+  `hoiDong_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `deTaiKhoaLuan_id` (`deTaiKhoaLuan_id`),
   KEY `giangVienPhanBien_id` (`giangVienPhanBien_id`),
@@ -309,4 +310,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-12 20:10:03
+-- Dump completed on 2025-05-13 20:52:29

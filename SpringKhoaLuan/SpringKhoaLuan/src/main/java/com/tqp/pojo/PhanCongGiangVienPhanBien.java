@@ -29,6 +29,9 @@ public class PhanCongGiangVienPhanBien implements Serializable{
 
     @Column(name = "thongBao_sent")
     private Boolean thongBaoSent;
+    
+    @Column(name = "hoiDong_id")
+    private Integer hoiDongId;
 
     public PhanCongGiangVienPhanBien() {}
 
@@ -50,6 +53,9 @@ public class PhanCongGiangVienPhanBien implements Serializable{
 
     public Boolean getThongBaoSent() { return thongBaoSent; }
     public void setThongBaoSent(Boolean thongBaoSent) { this.thongBaoSent = thongBaoSent; }
+    
+    public Integer getHoiDongId() { return hoiDongId; }
+    public void setHoiDongId(Integer hoiDongId) { this.hoiDongId = hoiDongId; }
 
     @Override
     public int hashCode() {

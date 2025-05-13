@@ -9,10 +9,12 @@ package com.tqp.controllers;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.DeTaiKhoaLuan;
+import com.tqp.pojo.HoiDong;
 import com.tqp.pojo.NguoiDung;
 import com.tqp.services.DeTaiHuongDanService;
 import com.tqp.services.DeTaiService;
 import com.tqp.services.DeTaiSinhVienService;
+import com.tqp.services.HoiDongService;
 import com.tqp.services.NguoiDungService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,6 +41,9 @@ public class GiaoVuController {
 
     @Autowired
     private DeTaiHuongDanService deTaiGVHuongDanService;
+    
+    @Autowired
+    private HoiDongService hoiDongService;
 
     @GetMapping("/khoaluan")
     public String giaoVuView(Model model, Principal principal) {
@@ -186,5 +191,4 @@ public class GiaoVuController {
 
         return "redirect:/khoaluan/danhsach_thuchien?khoaHoc=" + sv.getKhoaHoc();
     }
-
 }
