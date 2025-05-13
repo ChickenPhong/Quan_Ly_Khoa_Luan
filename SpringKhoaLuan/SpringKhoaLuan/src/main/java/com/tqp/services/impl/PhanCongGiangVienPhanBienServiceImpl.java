@@ -39,4 +39,13 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
     public void delete(int id) {
         repo.delete(id);
     }
+    
+    @Override
+    public void addPhanBien(int hoiDongId, int giangVienId) {
+        PhanCongGiangVienPhanBien pc = new PhanCongGiangVienPhanBien();
+        pc.setHoiDongId(hoiDongId);
+        pc.setGiangVienPhanBienId(giangVienId);
+        pc.setThongBaoSent(false);
+        repo.save(pc);
+    }
 }

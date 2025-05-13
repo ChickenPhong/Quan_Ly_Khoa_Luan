@@ -14,6 +14,6 @@ import java.util.List;
 public interface PhanCongGiangVienPhanBienRepository {
     List<PhanCongGiangVienPhanBien> getAll();
     PhanCongGiangVienPhanBien getById(int id);
-    PhanCongGiangVienPhanBien save(PhanCongGiangVienPhanBien p);
+    PhanCongGiangVienPhanBien save(PhanCongGiangVienPhanBien p); //dùng cho addPhanBien
     void delete(int id);
 }

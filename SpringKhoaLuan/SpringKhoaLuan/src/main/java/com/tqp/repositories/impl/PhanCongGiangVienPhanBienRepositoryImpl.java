@@ -41,7 +41,7 @@ public class PhanCongGiangVienPhanBienRepositoryImpl implements PhanCongGiangVie
     public PhanCongGiangVienPhanBien save(PhanCongGiangVienPhanBien p) {
         Session s = factory.getObject().getCurrentSession();
         s.saveOrUpdate(p);
-        return p;
+        return p; // dùng được cho add hoặc update
     }
 
     @Override

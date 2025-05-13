@@ -39,4 +39,13 @@ public class ThanhVienHoiDongServiceImpl implements ThanhVienHoiDongService{
     public void delete(int id) {
         repo.delete(id);
     }
+    
+    @Override
+    public void addThanhVien(int hoiDongId, int userId, String role) {
+        ThanhVienHoiDong tv = new ThanhVienHoiDong();
+        tv.setHoiDongId(hoiDongId);
+        tv.setUserId(userId);
+        tv.setRole(role);
+        repo.save(tv);
+    }
 }

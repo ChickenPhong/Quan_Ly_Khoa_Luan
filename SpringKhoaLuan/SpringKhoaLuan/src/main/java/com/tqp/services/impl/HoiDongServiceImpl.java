@@ -10,6 +10,8 @@ package com.tqp.services.impl;
  */
 import com.tqp.pojo.HoiDong;
 import com.tqp.repositories.HoiDongRepository;
+import com.tqp.repositories.PhanCongGiangVienPhanBienRepository;
+import com.tqp.repositories.ThanhVienHoiDongRepository;
 import com.tqp.services.HoiDongService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

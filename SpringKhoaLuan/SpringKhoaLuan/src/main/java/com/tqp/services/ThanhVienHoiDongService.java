@@ -16,4 +16,6 @@ public interface ThanhVienHoiDongService {
     ThanhVienHoiDong getById(int id);
     ThanhVienHoiDong add(ThanhVienHoiDong tv);
     void delete(int id);
+    
+    void addThanhVien(int hoiDongId, int userId, String role);
 }

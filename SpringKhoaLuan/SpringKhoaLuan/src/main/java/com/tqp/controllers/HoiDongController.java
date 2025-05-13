@@ -1,0 +1,78 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.tqp.controllers;
+
+import com.tqp.pojo.HoiDong;
+import com.tqp.pojo.NguoiDung;
+import com.tqp.services.HoiDongService;
+import com.tqp.services.NguoiDungService;
+import com.tqp.services.PhanCongGiangVienPhanBienService;
+import com.tqp.services.ThanhVienHoiDongService;
+import java.security.Principal;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import static org.springframework.web.server.ServerWebExchangeExtensionsKt.principal;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+/**
+ *
+ * @author Tran Quoc Phong
+ */
+@Controller
+public class HoiDongController {
+    @Autowired
+    private HoiDongService hoiDongService;
+
+    @Autowired
+    private NguoiDungService nguoiDungService;
+    
+    @Autowired
+    private ThanhVienHoiDongService thanhVienHoiDongService;
+
+    @Autowired
+    private PhanCongGiangVienPhanBienService phanBienService;
+
+    @GetMapping("/hoidong")
+    public String viewHoiDong(Model model, Principal principal) {
+        var user = nguoiDungService.getByUsername(principal.getName());
+        
+        List<HoiDong> hoiDongs = hoiDongService.getAllHoiDong();
+        model.addAttribute("hoiDongs", hoiDongs);
+
+        // Lấy danh sách giảng viên để chọn vai trò
+        List<NguoiDung> giangViens = nguoiDungService.getGiangVienByKhoa(user.getKhoa());
+        model.addAttribute("giangViens", giangViens);
+
+        return "hoidong"; // giao diện hội đồng
+    }
+
+    @PostMapping("/hoidong/create")
+    public String createHoiDong(@RequestParam("tenHoiDong") String tenHoiDong,
+                                @RequestParam("chutich") int chuTichId,
+                                @RequestParam("thuky") int thuKyId,
+                                @RequestParam("giangvienphanbien") List<Integer> gvPhanBienIds,
+                                RedirectAttributes redirectAttributes) {
+        HoiDong hd = new HoiDong();
+        hd.setName(tenHoiDong);
+        hoiDongService.addHoiDong(hd);
+
+        // Gán các thành viên hội đồng
+        thanhVienHoiDongService.addThanhVien(hd.getId(), chuTichId, "chu_tich");
+        thanhVienHoiDongService.addThanhVien(hd.getId(), thuKyId, "thu_ky");
+
+        for (int gvId : gvPhanBienIds) {
+            thanhVienHoiDongService.addThanhVien(hd.getId(), gvId, "phan_bien");
+            phanBienService.addPhanBien(hd.getId(), gvId);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Tạo hội đồng thành công!");
+        return "redirect:/hoidong";
+    }
+}
