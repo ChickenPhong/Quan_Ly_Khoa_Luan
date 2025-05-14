@@ -25,7 +25,7 @@ public class HoiDong implements Serializable{
     private String name;
     
     @Column(name = "created_by")
-    private String createdBy;
+    private Integer createdBy;
 
     @Column(name = "status")
     private String status;
@@ -35,7 +35,7 @@ public class HoiDong implements Serializable{
 
     public HoiDong() {}
 
-    public HoiDong(Integer id, String name, String createdBy, String status, String khoa) {
+    public HoiDong(Integer id, String name, Integer createdBy, String status, String khoa) {
         this.id = id;
         this.name = name;
         this.createdBy = createdBy;
@@ -49,8 +49,8 @@ public class HoiDong implements Serializable{
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     
-    public String getCreatedBy() { return createdBy; }  // Getter và setter cho createdBy
-    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+    public Integer getCreatedBy() { return createdBy; }  // Getter và setter cho createdBy
+    public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

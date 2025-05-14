@@ -23,6 +23,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 @Configuration
@@ -86,6 +88,20 @@ public class SpringSecurityConfigs {
 
         return http.build();
     }
+    
+    //@Bean
+    //public WebMvcConfigurer webMvcConfigurer() {
+    //    return new WebMvcConfigurer() {
+    //        @Override
+    //        public void addCorsMappings(CorsRegistry registry) {
+    //            registry.addMapping("/**")
+    //                    .allowedOrigins("http://localhost:3000")  // Đảm bảo React có thể gọi API
+    //                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+    //                    .allowCredentials(true)
+    //                    .allowedHeaders("*");
+    //        }
+    //    };
+    //}
     
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

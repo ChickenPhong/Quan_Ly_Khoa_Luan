@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Alert, Button, Card, Col, Row, Spinner } from "react-bootstrap";
-import { useSearchParams } from "react-router-dom";
+import {useNavigate, useSearchParams } from "react-router-dom";
 import { MyUserContext } from "../config/Contexts";
 import MySpinner from "./layout/MySpinner";
 
@@ -8,12 +8,18 @@ const Home = () => {
     const user = useContext(MyUserContext);
     const [loading, setLoading] = useState(true);
     const [q] = useSearchParams();
+    const nav = useNavigate();
 
     useEffect(() => {
-        // Giả lập delay load dữ liệu
+        // Nếu chưa đăng nhập thì chuyển hướng sang /login
+        if (!user) {
+            nav("/login");
+            return;
+        }
+
         const timer = setTimeout(() => setLoading(false), 1000);
         return () => clearTimeout(timer);
-    }, [q]);
+    }, [q, user, nav]);
 
     if (!user)
         return <Alert variant="danger">Bạn chưa đăng nhập!</Alert>;

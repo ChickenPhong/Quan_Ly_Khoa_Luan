@@ -50,10 +50,6 @@ public class HoiDongController {
         // Lấy danh sách giảng viên theo khoa của user đang đăng nhập
         List<NguoiDung> giangViens = nguoiDungService.getGiangVienByKhoa(user.getKhoa());
         model.addAttribute("giangViens", giangViens);
-        
-        // Truyền chuTichId và thuKyId vào view để lọc giảng viên đã chọn
-        model.addAttribute("chuTichId", 0); // Cập nhật với chuTichId thực tế nếu có
-        model.addAttribute("thuKyId", 0);  // Cập nhật với thuKyId thực tế nếu có
 
         return "hoidong"; // giao diện hội đồng
     }
@@ -71,7 +67,7 @@ public class HoiDongController {
         hd.setName(tenHoiDong);
         String khoa = user.getKhoa();
         hd.setKhoa(khoa); // Gán thông tin khoa vào đối tượng hội đồng
-        hd.setCreatedBy(user.getUsername()); // Cập nhật thông tin người tạo hội đồng (nếu cần)
+        hd.setCreatedBy(user.getId()); // Sử dụng ID người dùng thay vì tên người dùng
         hd.setStatus("active"); // Cập nhật trạng thái hội đồng nếu cần
         hoiDongService.addHoiDong(hd);
 

@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import { Alert, Button, Form } from "react-bootstrap";
-import Apis, { authApis, endpoints } from "../../config/Apis";
+import Apis, { authApis, endpoints } from "../config/Apis";
 import { useNavigate } from "react-router-dom";
 import cookie from "react-cookies";
-import { MyDispatchContext } from "../../config/Contexts";
-import MySpinner from "../layout/MySpinner";
+import { MyDispatchContext } from "../config/Contexts";
+import MySpinner from "./layout/MySpinner";
 
 const Login = () => {
     const [user, setUser] = useState({});
@@ -23,8 +23,8 @@ const Login = () => {
             dispatch({ type: "login", payload: u.data });
             nav("/");
         } catch (ex) {
-            console.error(ex);
-            setMsg("Đăng nhập thất bại!");
+            console.error("Đăng nhập thất bại:", ex.response?.data || ex.message);
+            setMsg(ex.response?.data?.message || "Đăng nhập thất bại!");
         } finally {
             setLoading(false);
         }
