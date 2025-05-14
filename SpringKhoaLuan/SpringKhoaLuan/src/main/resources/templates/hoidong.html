@@ -16,27 +16,83 @@
         <div class="mb-3">
             <label for="chutich" class="form-label">Chọn Chủ Tịch</label>
             <select class="form-select" id="chutich" name="chutich" required>
-                <option th:each="giangVien : ${giangViens}" th:value="${giangVien.id}" th:text="${giangVien.username}"></option>
+                <option value="" disabled selected>Chọn Chủ Tịch</option> <!-- Lựa chọn trống -->
+                <option class="giangvien" th:each="giangVien : ${giangViens}" 
+                        th:value="${giangVien.id}" 
+                        th:text="${giangVien.username}">
+                </option>
             </select>
         </div>
 
         <div class="mb-3">
             <label for="thuky" class="form-label">Chọn Thư Ký</label>
             <select class="form-select" id="thuky" name="thuky" required>
-                <option th:each="giangVien : ${giangViens}" th:value="${giangVien.id}" th:text="${giangVien.username}"></option>
+                <option value="" disabled selected>Chọn Thư Ký</option> <!-- Lựa chọn trống -->
+                <option class="giangvien" th:each="giangVien : ${giangViens}" 
+                        th:value="${giangVien.id}" 
+                        th:text="${giangVien.username}">
+                </option>
             </select>
         </div>
 
         <div class="mb-3">
             <label for="giangvienphanbien" class="form-label">Chọn Giảng Viên Phản Biện</label>
             <select class="form-select" id="giangvienphanbien" name="giangvienphanbien" multiple required>
-                <option th:each="giangVien : ${giangViens}" th:value="${giangVien.id}" th:text="${giangVien.username}"></option>
+                <option value="" disabled selected>Chọn Giảng Viên Phản Biện</option> <!-- Lựa chọn trống -->
+                <option class="giangvien" th:each="giangVien : ${giangViens}" 
+                        th:value="${giangVien.id}" 
+                        th:text="${giangVien.username}">
+                </option>
             </select>
         </div>
+
 
         <button type="submit" class="btn btn-primary">Lập Hội Đồng</button>
     </form>
 </div>
 </body>
-</html>
+<script>
+    // Hàm này sẽ cập nhật lại các dropdown khi người dùng thay đổi giá trị
+    function updateDropdowns() {
+        var chuTichId = document.getElementById('chutich').value;
+        var thuKyId = document.getElementById('thuky').value;
+        var giangVienPhanBien = document.getElementById('giangvienphanbien');
+        
+        // In ra giá trị của các dropdown để kiểm tra
+        console.log('Chủ tịch đã chọn: ' + chuTichId);
+        console.log('Thư ký đã chọn: ' + thuKyId);
 
+
+        // Lấy tất cả các option của giảng viên
+        var giangViens = document.querySelectorAll('.giangvien');
+
+        giangViens.forEach(function(option) {
+            
+            // In ra từng option để kiểm tra
+            console.log('Option giảng viên: ', option.value);
+            
+            // Vô hiệu hóa các giảng viên đã chọn
+            if (option.value == chuTichId || option.value == thuKyId) {
+                option.disabled = true; // Vô hiệu hóa giảng viên đã chọn
+            } else {
+                option.disabled = false; // Bật lại các giảng viên còn lại
+            }
+        });
+
+        // Vô hiệu hóa các lựa chọn trùng trong giảng viên phản biện
+        var selectedOptions = [...giangVienPhanBien.options].filter(option => option.selected);
+        selectedOptions.forEach(function(selectedOption) {
+            giangViens.forEach(function(option) {
+                if (option.value == selectedOption.value) {
+                    option.disabled = true;
+                }
+            });
+        });
+    }
+
+    // Gọi hàm mỗi khi có sự thay đổi trong dropdown
+    document.getElementById('chutich').addEventListener('change', updateDropdowns);
+    document.getElementById('thuky').addEventListener('change', updateDropdowns);
+    document.getElementById('giangvienphanbien').addEventListener('change', updateDropdowns);
+</script>
+</html>

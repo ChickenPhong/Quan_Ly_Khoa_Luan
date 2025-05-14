@@ -11,6 +11,7 @@ import com.tqp.services.NguoiDungService;
 import com.tqp.services.PhanCongGiangVienPhanBienService;
 import com.tqp.services.ThanhVienHoiDongService;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,9 +47,13 @@ public class HoiDongController {
         List<HoiDong> hoiDongs = hoiDongService.getAllHoiDong();
         model.addAttribute("hoiDongs", hoiDongs);
 
-        // Lấy danh sách giảng viên để chọn vai trò
+        // Lấy danh sách giảng viên theo khoa của user đang đăng nhập
         List<NguoiDung> giangViens = nguoiDungService.getGiangVienByKhoa(user.getKhoa());
         model.addAttribute("giangViens", giangViens);
+        
+        // Truyền chuTichId và thuKyId vào view để lọc giảng viên đã chọn
+        model.addAttribute("chuTichId", 0); // Cập nhật với chuTichId thực tế nếu có
+        model.addAttribute("thuKyId", 0);  // Cập nhật với thuKyId thực tế nếu có
 
         return "hoidong"; // giao diện hội đồng
     }
@@ -58,18 +63,33 @@ public class HoiDongController {
                                 @RequestParam("chutich") int chuTichId,
                                 @RequestParam("thuky") int thuKyId,
                                 @RequestParam("giangvienphanbien") List<Integer> gvPhanBienIds,
+                                Principal principal,
                                 RedirectAttributes redirectAttributes) {
+        // Lấy thông tin người dùng từ Principal
+        var user = nguoiDungService.getByUsername(principal.getName());
         HoiDong hd = new HoiDong();
         hd.setName(tenHoiDong);
+        String khoa = user.getKhoa();
+        hd.setKhoa(khoa); // Gán thông tin khoa vào đối tượng hội đồng
+        hd.setCreatedBy(user.getUsername()); // Cập nhật thông tin người tạo hội đồng (nếu cần)
+        hd.setStatus("active"); // Cập nhật trạng thái hội đồng nếu cần
         hoiDongService.addHoiDong(hd);
+
 
         // Gán các thành viên hội đồng
         thanhVienHoiDongService.addThanhVien(hd.getId(), chuTichId, "chu_tich");
         thanhVienHoiDongService.addThanhVien(hd.getId(), thuKyId, "thu_ky");
 
+        // Lọc các giảng viên đã chọn
+        List<Integer> allGiangVienIds = new ArrayList<>();
+        allGiangVienIds.add(chuTichId);
+        allGiangVienIds.add(thuKyId);
+
         for (int gvId : gvPhanBienIds) {
-            thanhVienHoiDongService.addThanhVien(hd.getId(), gvId, "phan_bien");
-            phanBienService.addPhanBien(hd.getId(), gvId);
+            if (!allGiangVienIds.contains(gvId)) { // Kiểm tra giảng viên đã được chọn chưa
+                thanhVienHoiDongService.addThanhVien(hd.getId(), gvId, "phan_bien");
+                phanBienService.addPhanBien(hd.getId(), gvId); // lưu thêm bảng `phanconggiangvienphanbiens`
+            }
         }
 
         redirectAttributes.addFlashAttribute("message", "Tạo hội đồng thành công!");

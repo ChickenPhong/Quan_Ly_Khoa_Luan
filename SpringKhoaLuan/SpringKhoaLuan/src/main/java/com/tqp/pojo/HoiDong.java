@@ -23,16 +23,24 @@ public class HoiDong implements Serializable{
 
     @Column(name = "name", length = 100)
     private String name;
+    
+    @Column(name = "created_by")
+    private String createdBy;
 
     @Column(name = "status")
     private String status;
+    
+    @Column(name = "khoa")
+    private String khoa;
 
     public HoiDong() {}
 
-    public HoiDong(Integer id, String name, String status) {
+    public HoiDong(Integer id, String name, String createdBy, String status, String khoa) {
         this.id = id;
         this.name = name;
+        this.createdBy = createdBy;
         this.status = status;
+         this.khoa = khoa;
     }
 
     public Integer getId() { return id; }
@@ -40,9 +48,15 @@ public class HoiDong implements Serializable{
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    
+    public String getCreatedBy() { return createdBy; }  // Getter và setter cho createdBy
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    
+    public String getKhoa() { return khoa; }  // Getter và setter cho khoa
+    public void setKhoa(String khoa) { this.khoa = khoa; }
 
     @Override
     public int hashCode() {
