@@ -9,6 +9,7 @@ package com.tqp.services;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.HoiDong;
+import com.tqp.pojo.NguoiDung;
 import java.util.List;
 
 public interface HoiDongService {
@@ -16,4 +17,6 @@ public interface HoiDongService {
     HoiDong getById(int id);
     HoiDong addHoiDong(HoiDong hoiDong);
     void deleteHoiDong(int id);
+    
+    List<NguoiDung> getThanhVienHoiDong(int hoiDongId);
 }

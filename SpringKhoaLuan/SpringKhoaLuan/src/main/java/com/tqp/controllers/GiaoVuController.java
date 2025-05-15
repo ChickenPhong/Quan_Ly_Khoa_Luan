@@ -17,6 +17,7 @@ import com.tqp.services.DeTaiService;
 import com.tqp.services.DeTaiSinhVienService;
 import com.tqp.services.HoiDongService;
 import com.tqp.services.NguoiDungService;
+import com.tqp.services.PhanCongGiangVienPhanBienService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,6 +49,9 @@ public class GiaoVuController {
     
     @Autowired
     private DeTaiHoiDongService deTaiHoiDongService;
+    
+    @Autowired
+    private PhanCongGiangVienPhanBienService phanCongGiangVienPhanBienService;
 
     @GetMapping("/khoaluan")
     public String giaoVuView(Model model, Principal principal) {
@@ -281,16 +285,13 @@ public class GiaoVuController {
             })
             .collect(Collectors.toList());
 
-        // Lấy danh sách hội đồng
         var hoiDongs = hoiDongService.getAllHoiDong();
         int hdIndex = 0;
 
         for (var dt : deTais) {
-            // Nếu đã được giao thì bỏ qua
             if (deTaiHoiDongService.isDeTaiAssigned(dt.getId()))
                 continue;
 
-            // Giao lần lượt, mỗi hội đồng tối đa 5 đề tài
             boolean assigned = false;
             for (int i = 0; i < hoiDongs.size(); i++) {
                 var hd = hoiDongs.get(hdIndex % hoiDongs.size());
@@ -298,6 +299,24 @@ public class GiaoVuController {
 
                 if (soLuongDeTai < 5) {
                     deTaiHoiDongService.assignHoiDong(dt.getId(), hd.getId());
+
+                    // Gán giảng viên phản biện từ danh sách thành viên hội đồng
+                    var thanhVien = hoiDongService.getThanhVienHoiDong(hd.getId());
+                    if (!thanhVien.isEmpty()) {
+                        NguoiDung randomGv = thanhVien.stream()
+                            .filter(tv -> "phan_bien".equals(tv.getRole()))
+                            .findFirst()
+                            .orElse(null);
+                        // Gán đúng ID của người dùng làm giảng viên phản biện
+                        if (randomGv != null) {
+                            System.out.println("== DEBUG ==");  
+                            System.out.println("deTaiId = " + dt.getId());  
+                            System.out.println("giangVienId = " + randomGv.getId());  
+                            System.out.println("hoiDongId = " + hd.getId());
+                            phanCongGiangVienPhanBienService.assignPhanBien(dt.getId(), randomGv.getId(), hd.getId());
+                        }
+                    }
+
                     assigned = true;
                     hdIndex++;
                     break;
@@ -313,5 +332,6 @@ public class GiaoVuController {
         redirectAttrs.addFlashAttribute("message", "Đã giao đề tài ngẫu nhiên cho hội đồng.");
         return "redirect:/khoaluan/giaodetai?khoaHoc=" + khoaHoc;
     }
+
 
 }

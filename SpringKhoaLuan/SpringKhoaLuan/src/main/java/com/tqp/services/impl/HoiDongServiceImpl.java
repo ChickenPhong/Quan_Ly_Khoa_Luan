@@ -9,6 +9,7 @@ package com.tqp.services.impl;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.HoiDong;
+import com.tqp.pojo.NguoiDung;
 import com.tqp.repositories.HoiDongRepository;
 import com.tqp.repositories.PhanCongGiangVienPhanBienRepository;
 import com.tqp.repositories.ThanhVienHoiDongRepository;
@@ -21,6 +22,9 @@ import org.springframework.stereotype.Service;
 public class HoiDongServiceImpl implements HoiDongService{
     @Autowired
     private HoiDongRepository hoiDongRepo;
+    
+    @Autowired
+    private ThanhVienHoiDongRepository tvRepo;
 
     @Override
     public List<HoiDong> getAllHoiDong() {
@@ -40,5 +44,10 @@ public class HoiDongServiceImpl implements HoiDongService{
     @Override
     public void deleteHoiDong(int id) {
         hoiDongRepo.delete(id);
+    }
+    
+    @Override
+    public List<NguoiDung> getThanhVienHoiDong(int hoiDongId) {
+        return tvRepo.getGiangVienByHoiDongId(hoiDongId);
     }
 }

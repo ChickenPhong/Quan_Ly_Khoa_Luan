@@ -88,7 +88,7 @@ public class HoiDongController {
         for (int gvId : gvPhanBienIds) {
             if (!allGiangVienIds.contains(gvId)) { // Kiểm tra giảng viên đã được chọn chưa
                 thanhVienHoiDongService.addThanhVien(hd.getId(), gvId, "phan_bien");
-                phanBienService.addPhanBien(hd.getId(), gvId); // lưu thêm bảng `phanconggiangvienphanbiens`
+                //phanBienService.addPhanBien(hd.getId(), gvId); // lưu thêm bảng `phanconggiangvienphanbiens`
             }
             
             // Lấy thông tin giảng viên phản biện để gửi email

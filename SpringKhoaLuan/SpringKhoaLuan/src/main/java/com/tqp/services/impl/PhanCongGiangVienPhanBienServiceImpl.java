@@ -12,13 +12,20 @@ import com.tqp.pojo.PhanCongGiangVienPhanBien;
 import com.tqp.repositories.PhanCongGiangVienPhanBienRepository;
 import com.tqp.services.PhanCongGiangVienPhanBienService;
 import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPhanBienService{
     @Autowired
     private PhanCongGiangVienPhanBienRepository repo;
+    
+    @Autowired
+    private org.hibernate.SessionFactory sessionFactory;
 
     @Override
     public List<PhanCongGiangVienPhanBien> getAll() {
@@ -41,11 +48,22 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
     }
     
     @Override
-    public void addPhanBien(int hoiDongId, int giangVienId) {
+    public void addPhanBien(int deTaiId, int hoiDongId, int giangVienId) {
         PhanCongGiangVienPhanBien pc = new PhanCongGiangVienPhanBien();
+        pc.setDeTaiKhoaLuanId(deTaiId);
         pc.setHoiDongId(hoiDongId);
         pc.setGiangVienPhanBienId(giangVienId);
         pc.setThongBaoSent(false);
         repo.save(pc);
+    }
+    
+    @Override
+    public void assignPhanBien(int deTaiId, int giangVienId, int hoiDongId) {
+        PhanCongGiangVienPhanBien pc = new PhanCongGiangVienPhanBien();
+        pc.setDeTaiKhoaLuanId(deTaiId);
+        pc.setHoiDongId(hoiDongId);
+        pc.setGiangVienPhanBienId(giangVienId);
+        pc.setThongBaoSent(false);
+        repo.save(pc); // Dùng Hibernate để tránh lỗi insert thiếu dữ liệu
     }
 }

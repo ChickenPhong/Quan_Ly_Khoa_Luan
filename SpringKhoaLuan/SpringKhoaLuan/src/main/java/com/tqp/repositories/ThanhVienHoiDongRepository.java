@@ -9,6 +9,7 @@ package com.tqp.repositories;
  * @author Tran Quoc Phong
  */
 
+import com.tqp.pojo.NguoiDung;
 import com.tqp.pojo.ThanhVienHoiDong;
 import java.util.List;
 
@@ -17,4 +18,6 @@ public interface ThanhVienHoiDongRepository {
     ThanhVienHoiDong getById(int id);
     ThanhVienHoiDong save(ThanhVienHoiDong tv);
     void delete(int id);
+    
+    List<NguoiDung> getGiangVienByHoiDongId(int hoiDongId);
 }

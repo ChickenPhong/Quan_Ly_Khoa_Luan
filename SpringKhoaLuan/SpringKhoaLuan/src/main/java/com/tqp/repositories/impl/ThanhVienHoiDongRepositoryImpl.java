@@ -8,6 +8,7 @@ package com.tqp.repositories.impl;
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.pojo.NguoiDung;
 import com.tqp.pojo.ThanhVienHoiDong;
 import com.tqp.repositories.ThanhVienHoiDongRepository;
 import jakarta.persistence.Query;
@@ -51,5 +52,16 @@ public class ThanhVienHoiDongRepositoryImpl implements ThanhVienHoiDongRepositor
         ThanhVienHoiDong tv = s.get(ThanhVienHoiDong.class, id);
         if (tv != null)
             s.delete(tv);
+    }
+    
+    @Override
+    public List<NguoiDung> getGiangVienByHoiDongId(int hoiDongId) {
+        Session session = factory.getObject().getCurrentSession();
+        Query q = session.createQuery(
+            "SELECT u FROM NguoiDung u WHERE u.id IN (SELECT tv.userId FROM ThanhVienHoiDong tv WHERE tv.hoiDongId = :id)",
+            NguoiDung.class
+        );
+        q.setParameter("id", hoiDongId);
+        return q.getResultList();
     }
 }
