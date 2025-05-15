@@ -196,7 +196,7 @@ public class GiaoVuController {
         return "redirect:/khoaluan/danhsach_thuchien?khoaHoc=" + sv.getKhoaHoc();
     }
     
-    @GetMapping("/khoaluan/giao_detai")
+    @GetMapping("/khoaluan/giaodetai")
     public String viewGiaoDeTai(Model model, Principal principal) {
         var user = nguoiDungService.getByUsername(principal.getName());
         var deTais = deTaiService.getByKhoa(user.getKhoa());
@@ -205,10 +205,10 @@ public class GiaoVuController {
         model.addAttribute("deTais", deTais);
         model.addAttribute("hoiDongs", hoiDongs);
 
-        return "giao_detai";
+        return "giaodetai";
     }
 
-    @PostMapping("/khoaluan/giao_detai/assign")
+    @PostMapping("/khoaluan/giaodetai/assign")
     public String assignDeTaiHoiDong(@RequestParam("deTaiId") int deTaiId,
                                      @RequestParam("hoiDongId") int hoiDongId,
                                      RedirectAttributes redirectAttrs) {
@@ -219,6 +219,6 @@ public class GiaoVuController {
             redirectAttrs.addFlashAttribute("error", "Đề tài đã được giao hội đồng!");
         }
 
-        return "redirect:/khoaluan/giao_detai";
+        return "redirect:/khoaluan/giaodetai";
     }
 }
