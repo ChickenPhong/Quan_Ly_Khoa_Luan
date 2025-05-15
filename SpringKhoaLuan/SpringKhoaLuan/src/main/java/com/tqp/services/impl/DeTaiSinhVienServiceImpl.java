@@ -57,4 +57,9 @@ public class DeTaiSinhVienServiceImpl implements DeTaiSinhVienService{
     public DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId) {
         return repo.findBySinhVienId(sinhVienId);
     }
+    
+    @Override
+    public DeTaiKhoaLuan_SinhVien findByDeTaiId(int deTaiId) {
+        return repo.findByDeTaiId(deTaiId);
+    }
 }

@@ -18,4 +18,5 @@ public interface DeTaiSinhVienRepository {
     void delete(int id);
     boolean isSinhVienDaXepDeTai(int sinhVienId);
     DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId);
+    DeTaiKhoaLuan_SinhVien findByDeTaiId(int deTaiId);
 }

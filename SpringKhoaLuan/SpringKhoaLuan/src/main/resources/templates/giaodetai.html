@@ -10,11 +10,27 @@
 <div class="container mt-4">
     <h2 class="text-center text-primary">Giao đề tài cho Hội đồng</h2>
 
+    <form method="get" th:action="@{/khoaluan/giaodetai}">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="khoaHoc" class="form-label">Chọn khóa</label>
+                <select class="form-select" name="khoaHoc" id="khoaHoc" required>
+                    <option value="" disabled selected>-- Chọn khóa học --</option>
+                    <option th:each="y : ${yearOptions}" th:value="${y}" th:text="'Khóa ' + ${y}" th:selected="${khoaHoc == y}"></option>
+                </select>
+            </div>
+            <div class="col-md-3 align-self-end">
+                <button type="submit" class="btn btn-primary">Xem danh sách</button>
+            </div>
+        </div>
+    </form>
+
     <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
 
-    <form th:action="@{/khoaluan/giao_detai/giao}" method="post">
+    <form th:action="@{/khoaluan/giaodetai/giao}" method="post">
+        <input type="hidden" name="khoaHoc" th:value="${khoaHoc}" />
         <div class="d-flex justify-content-end mb-3">
-            <button class="btn btn-success" type="submit">Giao đề tài ngẫu nhiên</button>
+            <button class="btn btn-success" type="submit">Giao đề tài ngẫu nhiên cho hội đồng</button>
         </div>
     </form>
 
@@ -44,5 +60,3 @@
 <div th:replace="base :: footer"></div>
 </body>
 </html>
-
-

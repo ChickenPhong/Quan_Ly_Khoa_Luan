@@ -10,7 +10,7 @@ package com.tqp.repositories.impl;
  */
 import com.tqp.pojo.DeTaiKhoaLuan_SinhVien;
 import com.tqp.repositories.DeTaiSinhVienRepository;
-import jakarta.persistence.Query;
+import org.hibernate.query.Query;
 import java.util.List;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +66,16 @@ public class DeTaiSinhVienRepositoryImpl implements DeTaiSinhVienRepository{
         Session s = factory.getObject().getCurrentSession();
         Query q = s.createQuery("FROM DeTaiKhoaLuan_SinhVien WHERE sinhVienId = :id", DeTaiKhoaLuan_SinhVien.class);
         q.setParameter("id", sinhVienId);
+        List<DeTaiKhoaLuan_SinhVien> result = q.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+    
+    @Override
+    public DeTaiKhoaLuan_SinhVien findByDeTaiId(int deTaiId) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query<DeTaiKhoaLuan_SinhVien> q = 
+            session.createQuery("FROM DeTaiKhoaLuan_SinhVien WHERE deTaiKhoaLuanId = :id", DeTaiKhoaLuan_SinhVien.class);
+        q.setParameter("id", deTaiId);
         List<DeTaiKhoaLuan_SinhVien> result = q.getResultList();
         return result.isEmpty() ? null : result.get(0);
     }

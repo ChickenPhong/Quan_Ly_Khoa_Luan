@@ -10,7 +10,7 @@ package com.tqp.repositories.impl;
  */
 import com.tqp.pojo.DeTaiKhoaLuan_HoiDong;
 import com.tqp.repositories.DeTaiHoiDongRepository;
-import jakarta.persistence.Query;
+import org.hibernate.query.Query;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -68,9 +68,27 @@ public class DeTaiHoiDongRepositoryImpl implements DeTaiHoiDongRepository{
     @Override
     public boolean isDeTaiAssigned(int deTaiId) {
         Session session = sessionFactory.getCurrentSession();
-        Query q = session.createQuery("SELECT COUNT(*) FROM DeTaiHoiDong WHERE deTaiKhoaLuanId=:id");
+        Query q = session.createQuery("SELECT COUNT(*) FROM DeTaiKhoaLuan_HoiDong WHERE deTaiKhoaLuanId=:id");
         q.setParameter("id", deTaiId);
         long count = (Long) q.getSingleResult();
         return count > 0;
+    }
+    
+    @Override
+    public DeTaiKhoaLuan_HoiDong findByDeTaiId(int deTaiId) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query<DeTaiKhoaLuan_HoiDong> q = 
+            session.createQuery("FROM DeTaiKhoaLuan_HoiDong WHERE deTaiKhoaLuanId = :id", DeTaiKhoaLuan_HoiDong.class);
+        q.setParameter("id", deTaiId);
+        List<DeTaiKhoaLuan_HoiDong> result = q.getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+    
+    @Override
+    public long countDeTaiByHoiDongId(int hoiDongId) {
+        Session session = this.factory.getObject().getCurrentSession();
+        Query<Long> q = session.createQuery("SELECT COUNT(*) FROM DeTaiKhoaLuan_HoiDong WHERE hoiDongId = :id", Long.class);
+        q.setParameter("id", hoiDongId);
+        return q.getSingleResult();
     }
 }

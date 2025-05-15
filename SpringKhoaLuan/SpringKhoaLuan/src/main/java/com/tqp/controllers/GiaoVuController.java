@@ -197,13 +197,58 @@ public class GiaoVuController {
     }
     
     @GetMapping("/khoaluan/giaodetai")
-    public String viewGiaoDeTai(Model model, Principal principal) {
+    public String viewGiaoDeTai(@RequestParam(value = "khoaHoc", required = false) String khoaHoc,
+                                Model model,
+                                Principal principal) {
         var user = nguoiDungService.getByUsername(principal.getName());
-        var deTais = deTaiService.getByKhoa(user.getKhoa());
-        var hoiDongs = hoiDongService.getAllHoiDong();
 
-        model.addAttribute("deTais", deTais);
+        // Load danh sách năm
+        int currentYear = java.time.Year.now().getValue();
+        List<String> years = new ArrayList<>();
+        for (int y = 2020; y <= currentYear; y++) {
+            years.add(String.valueOf(y));
+        }
+        model.addAttribute("yearOptions", years);
+        model.addAttribute("khoaHoc", khoaHoc);
+        model.addAttribute("khoa", user.getKhoa());
+
+        // Load danh sách hội đồng
+        var hoiDongs = hoiDongService.getAllHoiDong();
         model.addAttribute("hoiDongs", hoiDongs);
+
+        if (khoaHoc != null) {
+            // Lọc những đề tài đã được gán cho sinh viên
+            var deTais = deTaiService.getByKhoa(user.getKhoa()).stream()
+                .filter(dt -> {
+                    var dtsv = deTaiSinhVienService.findByDeTaiId(dt.getId());
+                    return dtsv != null && khoaHoc.equals(nguoiDungService.getById(dtsv.getSinhVienId()).getKhoaHoc());
+                })
+                .collect(Collectors.toList());
+            model.addAttribute("deTais", deTais);
+
+            // Map đề tài -> sinh viên
+            Map<Integer, String> svMap = new HashMap<>();
+            for (var dt : deTais) {
+                var dtsv = deTaiSinhVienService.findByDeTaiId(dt.getId());
+                if (dtsv != null) {
+                    var sv = nguoiDungService.getById(dtsv.getSinhVienId());
+                    svMap.put(dt.getId(), sv.getUsername());
+                }
+            }
+
+            // Map đề tài -> hội đồng
+            Map<Integer, String> hdMap = new HashMap<>();
+            for (var dt : deTais) {
+                var hdh = deTaiHoiDongService.findByDeTaiId(dt.getId());
+                if (hdh != null) {
+                    var hd = hoiDongService.getById(hdh.getHoiDongId());
+                    hdMap.put(dt.getId(), hd.getName());
+                }
+            }
+
+            model.addAttribute("svMap", svMap);
+            model.addAttribute("hdMap", hdMap);
+        }
 
         return "giaodetai";
     }
@@ -221,4 +266,52 @@ public class GiaoVuController {
 
         return "redirect:/khoaluan/giaodetai";
     }
+    
+    @PostMapping("/khoaluan/giaodetai/giao")
+    public String giaoDeTaiNgauNhien(@RequestParam("khoaHoc") String khoaHoc,
+                                      Principal principal,
+                                      RedirectAttributes redirectAttrs) {
+        var user = nguoiDungService.getByUsername(principal.getName());
+
+        // Lấy danh sách đề tài đã có sinh viên thực hiện theo khoa & khóa
+        var deTais = deTaiService.getByKhoa(user.getKhoa()).stream()
+            .filter(dt -> {
+                var dtsv = deTaiSinhVienService.findByDeTaiId(dt.getId());
+                return dtsv != null && khoaHoc.equals(nguoiDungService.getById(dtsv.getSinhVienId()).getKhoaHoc());
+            })
+            .collect(Collectors.toList());
+
+        // Lấy danh sách hội đồng
+        var hoiDongs = hoiDongService.getAllHoiDong();
+        int hdIndex = 0;
+
+        for (var dt : deTais) {
+            // Nếu đã được giao thì bỏ qua
+            if (deTaiHoiDongService.isDeTaiAssigned(dt.getId()))
+                continue;
+
+            // Giao lần lượt, mỗi hội đồng tối đa 5 đề tài
+            boolean assigned = false;
+            for (int i = 0; i < hoiDongs.size(); i++) {
+                var hd = hoiDongs.get(hdIndex % hoiDongs.size());
+                var soLuongDeTai = deTaiHoiDongService.countDeTaiByHoiDongId(hd.getId());
+
+                if (soLuongDeTai < 5) {
+                    deTaiHoiDongService.assignHoiDong(dt.getId(), hd.getId());
+                    assigned = true;
+                    hdIndex++;
+                    break;
+                }
+            }
+
+            if (!assigned) {
+                redirectAttrs.addFlashAttribute("error", "Không đủ hội đồng để giao tất cả đề tài.");
+                break;
+            }
+        }
+
+        redirectAttrs.addFlashAttribute("message", "Đã giao đề tài ngẫu nhiên cho hội đồng.");
+        return "redirect:/khoaluan/giaodetai?khoaHoc=" + khoaHoc;
+    }
+
 }

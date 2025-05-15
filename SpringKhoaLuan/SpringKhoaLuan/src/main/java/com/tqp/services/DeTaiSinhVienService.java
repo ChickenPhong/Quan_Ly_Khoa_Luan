@@ -20,6 +20,7 @@ public interface DeTaiSinhVienService {
     void assign(int sinhVienId, int deTaiId);
     boolean isSinhVienDaXepDeTai(int sinhVienId);
     DeTaiKhoaLuan_SinhVien findBySinhVienId(int sinhVienId);
+    DeTaiKhoaLuan_SinhVien findByDeTaiId(int deTaiId);
 }
 
 

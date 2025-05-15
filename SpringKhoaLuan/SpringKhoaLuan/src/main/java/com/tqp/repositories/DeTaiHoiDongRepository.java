@@ -19,4 +19,6 @@ public interface DeTaiHoiDongRepository {
     
     void assignHoiDong(int deTaiId, int hoiDongId);
     boolean isDeTaiAssigned(int deTaiId);
+    DeTaiKhoaLuan_HoiDong findByDeTaiId(int deTaiId);
+    long countDeTaiByHoiDongId(int hoiDongId);
 }

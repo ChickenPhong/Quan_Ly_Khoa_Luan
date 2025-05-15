@@ -49,4 +49,14 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     public boolean isDeTaiAssigned(int deTaiId) {
         return repo.isDeTaiAssigned(deTaiId);
     }
+    
+    @Override
+    public DeTaiKhoaLuan_HoiDong findByDeTaiId(int deTaiId) {
+        return repo.findByDeTaiId(deTaiId);
+    }
+    
+    @Override
+    public long countDeTaiByHoiDongId(int hoiDongId) {
+        return repo.countDeTaiByHoiDongId(hoiDongId);
+    }
 }
