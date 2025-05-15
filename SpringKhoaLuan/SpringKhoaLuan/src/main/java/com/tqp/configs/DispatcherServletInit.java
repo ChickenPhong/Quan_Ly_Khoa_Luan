@@ -18,7 +18,8 @@ public class DispatcherServletInit extends AbstractAnnotationConfigDispatcherSer
         return new Class[] {
             SpringSecurityConfigs.class,
             HibernateConfigs.class, // bạn sẽ tạo file này để cấu hình kết nối DB
-            ThymeleafConfig.class
+            ThymeleafConfig.class,
+            MailConfig.class
         };
     }
 

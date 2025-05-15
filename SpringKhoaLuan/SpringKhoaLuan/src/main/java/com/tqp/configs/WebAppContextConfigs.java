@@ -30,7 +30,8 @@ import com.tqp.formatters.HoiDongFormatter;
     "com.tqp.formatters",
     "com.tqp.services",      // cần tạo nếu có Service
     "com.tqp.services.impl",
-    "com.tqp.pojo"
+    "com.tqp.pojo",
+    "com.tqp.configs" 
 })
 
 public class WebAppContextConfigs implements WebMvcConfigurer{

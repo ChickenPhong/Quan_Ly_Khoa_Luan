@@ -6,6 +6,7 @@ package com.tqp.controllers;
 
 import com.tqp.pojo.HoiDong;
 import com.tqp.pojo.NguoiDung;
+import com.tqp.services.EmailService;
 import com.tqp.services.HoiDongService;
 import com.tqp.services.NguoiDungService;
 import com.tqp.services.PhanCongGiangVienPhanBienService;
@@ -39,6 +40,9 @@ public class HoiDongController {
 
     @Autowired
     private PhanCongGiangVienPhanBienService phanBienService;
+    
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/hoidong")
     public String viewHoiDong(Model model, Principal principal) {
@@ -86,6 +90,15 @@ public class HoiDongController {
                 thanhVienHoiDongService.addThanhVien(hd.getId(), gvId, "phan_bien");
                 phanBienService.addPhanBien(hd.getId(), gvId); // lưu thêm bảng `phanconggiangvienphanbiens`
             }
+            
+            // Lấy thông tin giảng viên phản biện để gửi email
+            NguoiDung gv = nguoiDungService.getById(gvId);
+            
+            emailService.sendEmail(
+            gv.getEmail(),
+            "Thông báo phân công phản biện",
+            "Chào thầy/cô " + gv.getUsername() + ",\nThầy/cô đã được phân công làm giảng viên phản biện cho hội đồng \"" + tenHoiDong + "\"."
+        );
         }
 
         redirectAttributes.addFlashAttribute("message", "Tạo hội đồng thành công!");
