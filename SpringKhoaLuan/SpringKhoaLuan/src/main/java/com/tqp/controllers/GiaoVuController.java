@@ -11,6 +11,7 @@ package com.tqp.controllers;
 import com.tqp.pojo.DeTaiKhoaLuan;
 import com.tqp.pojo.HoiDong;
 import com.tqp.pojo.NguoiDung;
+import com.tqp.services.DeTaiHoiDongService;
 import com.tqp.services.DeTaiHuongDanService;
 import com.tqp.services.DeTaiService;
 import com.tqp.services.DeTaiSinhVienService;
@@ -44,6 +45,9 @@ public class GiaoVuController {
     
     @Autowired
     private HoiDongService hoiDongService;
+    
+    @Autowired
+    private DeTaiHoiDongService deTaiHoiDongService;
 
     @GetMapping("/khoaluan")
     public String giaoVuView(Model model, Principal principal) {
@@ -190,5 +194,31 @@ public class GiaoVuController {
         }
 
         return "redirect:/khoaluan/danhsach_thuchien?khoaHoc=" + sv.getKhoaHoc();
+    }
+    
+    @GetMapping("/khoaluan/giao_detai")
+    public String viewGiaoDeTai(Model model, Principal principal) {
+        var user = nguoiDungService.getByUsername(principal.getName());
+        var deTais = deTaiService.getByKhoa(user.getKhoa());
+        var hoiDongs = hoiDongService.getAllHoiDong();
+
+        model.addAttribute("deTais", deTais);
+        model.addAttribute("hoiDongs", hoiDongs);
+
+        return "giao_detai";
+    }
+
+    @PostMapping("/khoaluan/giao_detai/assign")
+    public String assignDeTaiHoiDong(@RequestParam("deTaiId") int deTaiId,
+                                     @RequestParam("hoiDongId") int hoiDongId,
+                                     RedirectAttributes redirectAttrs) {
+        if (!deTaiHoiDongService.isDeTaiAssigned(deTaiId)) {
+            deTaiHoiDongService.assignHoiDong(deTaiId, hoiDongId);
+            redirectAttrs.addFlashAttribute("message", "Giao đề tài thành công!");
+        } else {
+            redirectAttrs.addFlashAttribute("error", "Đề tài đã được giao hội đồng!");
+        }
+
+        return "redirect:/khoaluan/giao_detai";
     }
 }

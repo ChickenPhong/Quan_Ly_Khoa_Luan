@@ -42,6 +42,9 @@
                         <a class="nav-link" th:href="@{/giangvien/chamdiem}" sec:authorize="hasRole('ROLE_GIANGVIEN')">Chấm điểm</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/khoaluan/giaodetai}" sec:authorize="hasRole('ROLE_GIAOVU')">Giao đề tài</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link text-danger" th:href="@{/logout}" sec:authorize="isAuthenticated()">Đăng xuất</a>
                     </li>
                 </ul>

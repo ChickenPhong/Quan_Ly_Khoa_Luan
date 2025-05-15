@@ -16,4 +16,7 @@ public interface DeTaiHoiDongService {
     DeTaiKhoaLuan_HoiDong getById(int id);
     DeTaiKhoaLuan_HoiDong add(DeTaiKhoaLuan_HoiDong dthd);
     void delete(int id);
+    
+    void assignHoiDong(int deTaiId, int hoiDongId);
+    boolean isDeTaiAssigned(int deTaiId);
 }

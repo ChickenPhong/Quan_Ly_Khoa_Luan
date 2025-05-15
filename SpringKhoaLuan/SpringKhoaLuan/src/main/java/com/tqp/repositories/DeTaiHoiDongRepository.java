@@ -16,4 +16,7 @@ public interface DeTaiHoiDongRepository {
     DeTaiKhoaLuan_HoiDong getById(int id);
     DeTaiKhoaLuan_HoiDong save(DeTaiKhoaLuan_HoiDong dthd);
     void delete(int id);
+    
+    void assignHoiDong(int deTaiId, int hoiDongId);
+    boolean isDeTaiAssigned(int deTaiId);
 }

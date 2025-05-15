@@ -13,6 +13,7 @@ import com.tqp.repositories.DeTaiHoiDongRepository;
 import jakarta.persistence.Query;
 import java.util.List;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -23,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeTaiHoiDongRepositoryImpl implements DeTaiHoiDongRepository{
     @Autowired
     private LocalSessionFactoryBean factory;
+    
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Override
     public List<DeTaiKhoaLuan_HoiDong> getAll() {
@@ -50,5 +54,23 @@ public class DeTaiHoiDongRepositoryImpl implements DeTaiHoiDongRepository{
         DeTaiKhoaLuan_HoiDong dthd = s.get(DeTaiKhoaLuan_HoiDong.class, id);
         if (dthd != null)
             s.delete(dthd);
+    }
+    
+    @Override
+    public void assignHoiDong(int deTaiId, int hoiDongId) {
+        Session session = sessionFactory.getCurrentSession();
+        DeTaiKhoaLuan_HoiDong dtHd = new DeTaiKhoaLuan_HoiDong();
+        dtHd.setDeTaiKhoaLuanId(deTaiId);
+        dtHd.setHoiDongId(hoiDongId);
+        session.save(dtHd);
+    }
+
+    @Override
+    public boolean isDeTaiAssigned(int deTaiId) {
+        Session session = sessionFactory.getCurrentSession();
+        Query q = session.createQuery("SELECT COUNT(*) FROM DeTaiHoiDong WHERE deTaiKhoaLuanId=:id");
+        q.setParameter("id", deTaiId);
+        long count = (Long) q.getSingleResult();
+        return count > 0;
     }
 }

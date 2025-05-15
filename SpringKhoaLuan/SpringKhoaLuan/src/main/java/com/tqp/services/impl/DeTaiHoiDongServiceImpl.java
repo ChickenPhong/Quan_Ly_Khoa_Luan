@@ -39,4 +39,14 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     public void delete(int id) {
         repo.delete(id);
     }
+    
+    @Override
+    public void assignHoiDong(int deTaiId, int hoiDongId) {
+        repo.assignHoiDong(deTaiId, hoiDongId);
+    }
+
+    @Override
+    public boolean isDeTaiAssigned(int deTaiId) {
+        return repo.isDeTaiAssigned(deTaiId);
+    }
 }
