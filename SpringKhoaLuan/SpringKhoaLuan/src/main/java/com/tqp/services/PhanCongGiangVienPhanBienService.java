@@ -17,6 +17,6 @@ public interface PhanCongGiangVienPhanBienService {
     PhanCongGiangVienPhanBien add(PhanCongGiangVienPhanBien p);
     void delete(int id);
     
-    void addPhanBien(int deTaiId, int hoiDongId, int giangVienId);
-    void assignPhanBien(int deTaiId, int giangVienId, int hoiDongId);
+    void addPhanBien(int hoiDongId, int giangVienId);
+    void assignPhanBien(int giangVienId, int hoiDongId);
 }

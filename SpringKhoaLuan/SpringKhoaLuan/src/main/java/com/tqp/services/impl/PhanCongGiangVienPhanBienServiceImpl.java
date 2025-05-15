@@ -48,22 +48,18 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
     }
     
     @Override
-    public void addPhanBien(int deTaiId, int hoiDongId, int giangVienId) {
+    public void addPhanBien(int hoiDongId, int giangVienId) {
         PhanCongGiangVienPhanBien pc = new PhanCongGiangVienPhanBien();
-        pc.setDeTaiKhoaLuanId(deTaiId);
         pc.setHoiDongId(hoiDongId);
         pc.setGiangVienPhanBienId(giangVienId);
-        pc.setThongBaoSent(false);
         repo.save(pc);
     }
     
     @Override
-    public void assignPhanBien(int deTaiId, int giangVienId, int hoiDongId) {
+    public void assignPhanBien(int giangVienId, int hoiDongId) {
         PhanCongGiangVienPhanBien pc = new PhanCongGiangVienPhanBien();
-        pc.setDeTaiKhoaLuanId(deTaiId);
         pc.setHoiDongId(hoiDongId);
         pc.setGiangVienPhanBienId(giangVienId);
-        pc.setThongBaoSent(false);
         repo.save(pc); // Dùng Hibernate để tránh lỗi insert thiếu dữ liệu
     }
 }

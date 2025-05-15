@@ -313,7 +313,7 @@ public class GiaoVuController {
                             System.out.println("deTaiId = " + dt.getId());  
                             System.out.println("giangVienId = " + randomGv.getId());  
                             System.out.println("hoiDongId = " + hd.getId());
-                            phanCongGiangVienPhanBienService.assignPhanBien(dt.getId(), randomGv.getId(), hd.getId());
+                            phanCongGiangVienPhanBienService.assignPhanBien(randomGv.getId(), hd.getId());
                         }
                     }
 

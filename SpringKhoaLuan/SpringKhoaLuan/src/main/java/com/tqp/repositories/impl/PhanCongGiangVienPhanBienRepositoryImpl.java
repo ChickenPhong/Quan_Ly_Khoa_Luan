@@ -56,10 +56,9 @@ public class PhanCongGiangVienPhanBienRepositoryImpl implements PhanCongGiangVie
     }
     
     @Override
-    public void assignPhanBien(int deTaiId, int giangVienId, int hoiDongId) {
+    public void assignPhanBien(int giangVienId, int hoiDongId) {
         Session session = this.sessionFactory.getCurrentSession();
-        Query query = session.createNativeQuery("INSERT INTO phanconggiangvienphanbiens(deTaiKhoaLuan_id, giangVienPhanBien_id, hoiDong_id, thongBao_sent) VALUES (:deTaiId, :giangVienId, :hoiDongId, 0)");
-        query.setParameter("deTaiId", deTaiId);
+        Query query = session.createNativeQuery("INSERT INTO phanconggiangvienphanbiens(giangVienPhanBien_id, hoiDong_id) VALUES (:giangVienId, :hoiDongId)");
         query.setParameter("giangVienId", giangVienId);
         query.setParameter("hoiDongId", hoiDongId);
         query.executeUpdate();

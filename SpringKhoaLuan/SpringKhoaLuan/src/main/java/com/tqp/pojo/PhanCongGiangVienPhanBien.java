@@ -21,38 +21,26 @@ public class PhanCongGiangVienPhanBien implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "deTaiKhoaLuan_id")
-    private Integer deTaiKhoaLuanId;
 
     @Column(name = "giangVienPhanBien_id")
     private Integer giangVienPhanBienId;
 
-    @Column(name = "thongBao_sent")
-    private Boolean thongBaoSent;
-    
     @Column(name = "hoiDong_id")
     private Integer hoiDongId;
 
     public PhanCongGiangVienPhanBien() {}
 
-    public PhanCongGiangVienPhanBien(Integer id, Integer deTaiKhoaLuanId, Integer giangVienPhanBienId, Boolean thongBaoSent) {
-        this.id = id;
-        this.deTaiKhoaLuanId = deTaiKhoaLuanId;
+    public PhanCongGiangVienPhanBien(Integer id, Integer giangVienPhanBienId, Integer hoiDongId) {
+        this.id = id; 
         this.giangVienPhanBienId = giangVienPhanBienId;
-        this.thongBaoSent = thongBaoSent;
+        this.hoiDongId = hoiDongId;
     }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public Integer getDeTaiKhoaLuanId() { return deTaiKhoaLuanId; }
-    public void setDeTaiKhoaLuanId(Integer deTaiKhoaLuanId) { this.deTaiKhoaLuanId = deTaiKhoaLuanId; }
-
     public Integer getGiangVienPhanBienId() { return giangVienPhanBienId; }
     public void setGiangVienPhanBienId(Integer giangVienPhanBienId) { this.giangVienPhanBienId = giangVienPhanBienId; }
-
-    public Boolean getThongBaoSent() { return thongBaoSent; }
-    public void setThongBaoSent(Boolean thongBaoSent) { this.thongBaoSent = thongBaoSent; }
     
     public Integer getHoiDongId() { return hoiDongId; }
     public void setHoiDongId(Integer hoiDongId) { this.hoiDongId = hoiDongId; }
