@@ -1,18 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Tạo Hội Đồng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .select2-container--default .select2-selection--multiple {
-            min-height: 38px;
-        }
-    </style>
+    <head>
+        <title>Tạo Hội Đồng</title>
+    <th:block th:replace="base :: styles"></th:block>
 </head>
 <body>
-<div class="container mt-4">
+    <div th:replace="base :: header"></div>
     <h2 class="mb-4">Tạo Hội Đồng</h2>
     <form th:action="@{/hoidong/create}" method="post">
         <div class="mb-3">
@@ -47,7 +40,7 @@
         <button type="submit" class="btn btn-primary">Lập Hội Đồng</button>
     </form>
 </div>
-
+<div th:replace="base :: footer"></div>
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
