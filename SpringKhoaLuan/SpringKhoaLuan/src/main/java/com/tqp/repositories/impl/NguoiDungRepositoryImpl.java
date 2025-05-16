@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -23,7 +24,8 @@ import java.util.List;
 @Repository
 @Transactional
 
-public class NguoiDungRepositoryImpl implements NguoiDungRepository{
+public class NguoiDungRepositoryImpl implements NguoiDungRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -41,7 +43,7 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
             return null;
         }
     }
-    
+
     @Override
     public NguoiDung getById(int id) {
         Session session = this.factory.getObject().getCurrentSession();
@@ -55,7 +57,13 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
         s.persist(u);
         return u;
     }
-    
+
+    @Override
+    public NguoiDung merge(NguoiDung u) {
+        Session s = this.factory.getObject().getCurrentSession();
+        return (NguoiDung) s.merge(u);  // Dùng merge để cập nhật entity đã tồn tại
+    }
+
     @Override
     public boolean deleteUser(int id) {
         Session session = this.factory.getObject().getCurrentSession();
@@ -67,20 +75,19 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
         return false;
     }
 
-
     @Override
     public boolean authenticate(String username, String rawPassword) {
         NguoiDung u = this.getByUsername(username);
         return u != null && passwordEncoder.matches(rawPassword, u.getPassword());
     }
-    
+
     @Override
     public List<NguoiDung> getAllUsers() {
         Session session = this.factory.getObject().getCurrentSession();
         Query query = session.createQuery("FROM NguoiDung");
         return query.getResultList();
     }
-    
+
     @Override
     public List<NguoiDung> getGiangVienByKhoa(String khoa) {
         Session session = factory.getObject().getCurrentSession();
@@ -97,6 +104,6 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository{
         query.setParameter("khoaHoc", khoaHoc);
         System.out.println(">>>>> Khoa: " + khoa + " | KhoaHoc: " + khoaHoc);
         return query.getResultList();
-        
+
     }
 }

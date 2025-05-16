@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -15,6 +16,7 @@ public interface NguoiDungRepository {
     NguoiDung getByUsername(String username);
     NguoiDung getById(int id);
     NguoiDung addUser(NguoiDung u);
+    NguoiDung merge(NguoiDung u);
     boolean deleteUser(int id);
     boolean authenticate(String username, String rawPassword);
     List<NguoiDung> getAllUsers();

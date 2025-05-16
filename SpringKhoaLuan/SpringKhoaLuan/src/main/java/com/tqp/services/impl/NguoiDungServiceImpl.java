@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -33,7 +34,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Service
 @Primary
 @Transactional
-public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsService{
+public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsService {
+
     @Autowired
     private NguoiDungRepository nguoiDungRepo;
 
@@ -42,7 +44,7 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
 
     @Autowired
     private Cloudinary cloudinary;
-    
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
@@ -50,7 +52,7 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
     public NguoiDung getByUsername(String username) {
         return nguoiDungRepo.getByUsername(username);
     }
-    
+
     @Override
     public NguoiDung getById(int id) {
         return nguoiDungRepo.getById(id);
@@ -59,8 +61,9 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         NguoiDung u = nguoiDungRepo.getByUsername(username);
-        if (u == null)
+        if (u == null) {
             throw new UsernameNotFoundException("Không tìm thấy user");
+        }
 
         Set<GrantedAuthority> authorities = new HashSet<>();
         System.out.println("USERNAME: " + u.getUsername());
@@ -75,6 +78,12 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
     public NguoiDung addUser(NguoiDung user) {
         user.setPassword(passEncoder.encode(user.getPassword())); // mã hóa
         return nguoiDungRepo.addUser(user);
+    }
+
+    @Override
+    public NguoiDung mergeUser(NguoiDung user) {
+        // Nếu đã có user (tức là đã có ID), gọi merge để cập nhật
+        return nguoiDungRepo.merge(user);  // Dùng merge để cập nhật thay vì persist
     }
 
     @Override
@@ -99,7 +108,7 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
 
         return nguoiDungRepo.addUser(u);
     }
-    
+
     @Override
     public boolean deleteUser(int id) {
         return nguoiDungRepo.deleteUser(id);
@@ -114,19 +123,19 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
             System.out.println(" - Raw password: " + rawPassword);
             System.out.println(" - Stored hash: " + u.getPassword());
             System.out.println(" - Password match: " + passEncoder.matches(rawPassword, u.getPassword()));
-            
+
             System.out.println("Raw: " + rawPassword);
             System.out.println("Encoded: " + u.getPassword());
             System.out.println("Match: " + passEncoder.matches(rawPassword, u.getPassword()));
         }
         return u != null && passEncoder.matches(rawPassword, u.getPassword());
     }
-    
+
     @Override
     public List<NguoiDung> getAllUsers() {
         return nguoiDungRepo.getAllUsers();
     }
-    
+
     @Override
     public List<NguoiDung> getGiangVienByKhoa(String khoa) {
         return nguoiDungRepo.getGiangVienByKhoa(khoa);
