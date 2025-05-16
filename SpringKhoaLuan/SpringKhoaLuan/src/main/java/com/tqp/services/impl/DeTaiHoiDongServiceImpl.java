@@ -12,13 +12,19 @@ import com.tqp.pojo.DeTaiKhoaLuan_HoiDong;
 import com.tqp.repositories.DeTaiHoiDongRepository;
 import com.tqp.services.DeTaiHoiDongService;
 import java.util.List;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     @Autowired
     private DeTaiHoiDongRepository repo;
+    
+    @Autowired
+    private LocalSessionFactoryBean factory;
 
     @Override
     public List<DeTaiKhoaLuan_HoiDong> getAll() {
@@ -58,5 +64,14 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     @Override
     public long countDeTaiByHoiDongId(int hoiDongId) {
         return repo.countDeTaiByHoiDongId(hoiDongId);
+    }
+    
+     @Override
+    public List<DeTaiKhoaLuan_HoiDong> findByHoiDongId(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "FROM DeTaiKhoaLuan_HoiDong WHERE hoiDong_id = :hoiDongId";
+        Query q = s.createQuery(hql, DeTaiKhoaLuan_HoiDong.class);
+        q.setParameter("hoiDongId", hoiDongId);
+        return q.getResultList();
     }
 }

@@ -63,4 +63,20 @@ public class PhanCongGiangVienPhanBienRepositoryImpl implements PhanCongGiangVie
         query.setParameter("hoiDongId", hoiDongId);
         query.executeUpdate();
     }
+    
+    @Override
+    public List<PhanCongGiangVienPhanBien> findByUserId(int userId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM PhanCongGiangVienPhanBien WHERE giangVienPhanBienId = :userId", PhanCongGiangVienPhanBien.class);
+        q.setParameter("userId", userId);
+        return q.getResultList();  // trả về List thay vì uniqueResult()
+    }
+
+    @Override
+    public List<PhanCongGiangVienPhanBien> findByHoiDongId(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query q = s.createQuery("FROM PhanCongGiangVienPhanBien WHERE hoiDongId = :hoiDongId", PhanCongGiangVienPhanBien.class);
+        q.setParameter("hoiDongId", hoiDongId);
+        return q.getResultList();
+    }
 }

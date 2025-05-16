@@ -15,6 +15,7 @@ import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
     private PhanCongGiangVienPhanBienRepository repo;
     
     @Autowired
-    private org.hibernate.SessionFactory sessionFactory;
+    private LocalSessionFactoryBean factory;
 
     @Override
     public List<PhanCongGiangVienPhanBien> getAll() {
@@ -61,5 +62,23 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
         pc.setHoiDongId(hoiDongId);
         pc.setGiangVienPhanBienId(giangVienId);
         repo.save(pc); // Dùng Hibernate để tránh lỗi insert thiếu dữ liệu
+    }
+    
+    @Override
+    public List<PhanCongGiangVienPhanBien> findByUserId(int userId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "FROM PhanCongGiangVienPhanBien WHERE giangVienPhanBienId = :userId";
+        Query q = s.createQuery(hql, PhanCongGiangVienPhanBien.class);
+        q.setParameter("userId", userId);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<PhanCongGiangVienPhanBien> findByHoiDongId(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "FROM PhanCongGiangVienPhanBien WHERE hoiDong_id = :hoiDongId";
+        Query q = s.createQuery(hql, PhanCongGiangVienPhanBien.class);
+        q.setParameter("hoiDongId", hoiDongId);
+        return q.getResultList();
     }
 }

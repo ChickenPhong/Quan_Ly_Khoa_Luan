@@ -29,4 +29,9 @@ public class TieuChiServiceImpl implements TieuChiService{
     public void addTieuChi(TieuChi tieuChi) {
         tieuChiRepository.addTieuChi(tieuChi);
     }
+    
+    @Override
+    public List<TieuChi> findByKhoa(String khoa) {
+        return tieuChiRepository.findByKhoa(khoa);
+    }
 }

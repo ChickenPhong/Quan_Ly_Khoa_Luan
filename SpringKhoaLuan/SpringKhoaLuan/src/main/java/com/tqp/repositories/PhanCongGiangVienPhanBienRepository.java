@@ -17,4 +17,7 @@ public interface PhanCongGiangVienPhanBienRepository {
     PhanCongGiangVienPhanBien save(PhanCongGiangVienPhanBien p); //dùng cho addPhanBien
     void delete(int id);
     void assignPhanBien(int giangVienId, int hoiDongId);
+    
+    List<PhanCongGiangVienPhanBien> findByUserId(int userId);
+    List<PhanCongGiangVienPhanBien> findByHoiDongId(int hoiDongId);
 }

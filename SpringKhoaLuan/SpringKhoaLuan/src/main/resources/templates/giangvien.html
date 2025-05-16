@@ -33,6 +33,7 @@
                             <th>Email</th>
                             <th>Đề tài</th>
                             <th>Giảng viên hướng dẫn</th>
+                            <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,9 @@
                             <td th:text="${sv.email}"></td>
                             <td th:text="${deTaiMap[sv.id]}"></td>
                             <td th:text="${giangVienMap[sv.id]}"></td>
+                            <td>
+                              <a th:href="@{/giangvien/chamdiem(hoiDongId=${hoiDongMap[sv.id]})}" class="btn btn-sm btn-primary">Chấm điểm</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

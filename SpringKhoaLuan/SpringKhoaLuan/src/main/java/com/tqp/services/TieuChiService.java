@@ -14,4 +14,6 @@ import java.util.List;
 public interface TieuChiService {
     List<TieuChi> getAll();
     void addTieuChi(TieuChi tieuChi);
+    
+    List<TieuChi> findByKhoa(String khoa); 
 }

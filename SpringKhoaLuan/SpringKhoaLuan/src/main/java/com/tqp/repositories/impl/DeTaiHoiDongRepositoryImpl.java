@@ -91,4 +91,13 @@ public class DeTaiHoiDongRepositoryImpl implements DeTaiHoiDongRepository{
         q.setParameter("id", hoiDongId);
         return q.getSingleResult();
     }
+    
+    @Override
+    public List<DeTaiKhoaLuan_HoiDong> findByHoiDongId(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        Query<DeTaiKhoaLuan_HoiDong> q = s.createQuery(
+            "FROM DeTaiKhoaLuan_HoiDong WHERE hoiDongId = :hoiDongId", DeTaiKhoaLuan_HoiDong.class);
+        q.setParameter("hoiDongId", hoiDongId);
+        return q.getResultList();
+    }
 }
