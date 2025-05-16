@@ -17,8 +17,10 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     @Autowired
     private DeTaiHoiDongRepository repo;
@@ -69,8 +71,8 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
      @Override
     public List<DeTaiKhoaLuan_HoiDong> findByHoiDongId(int hoiDongId) {
         Session s = factory.getObject().getCurrentSession();
-        String hql = "FROM DeTaiKhoaLuan_HoiDong WHERE hoiDong_id = :hoiDongId";
-        Query q = s.createQuery(hql, DeTaiKhoaLuan_HoiDong.class);
+        String hql = "FROM DeTaiKhoaLuan_HoiDong WHERE hoiDongId = :hoiDongId";
+        Query<DeTaiKhoaLuan_HoiDong> q = s.createQuery(hql, DeTaiKhoaLuan_HoiDong.class);
         q.setParameter("hoiDongId", hoiDongId);
         return q.getResultList();
     }

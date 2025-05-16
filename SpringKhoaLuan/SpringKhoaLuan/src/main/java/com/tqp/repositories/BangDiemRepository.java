@@ -16,4 +16,6 @@ public interface BangDiemRepository {
     BangDiem getById(int id);
     BangDiem save(BangDiem diem);
     void delete(int id);
+    
+    BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi);
 }

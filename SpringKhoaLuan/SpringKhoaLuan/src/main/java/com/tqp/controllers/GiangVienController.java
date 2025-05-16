@@ -9,6 +9,7 @@ package com.tqp.controllers;
  * @author Tran Quoc Phong
  */
 import com.tqp.pojo.BangDiem;
+import com.tqp.pojo.DeTaiKhoaLuan;
 import com.tqp.services.BangDiemService;
 import com.tqp.services.DeTaiHoiDongService;
 import com.tqp.services.DeTaiHuongDanService;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class GiangVienController {
@@ -62,6 +64,10 @@ public class GiangVienController {
             Principal principal,
             Model model) {
         var user = nguoiDungService.getByUsername(principal.getName());
+        // Giả sử bạn có thể lấy giangVienPhanBienId từ user hoặc service
+        int giangVienPhanBienId = user.getId();
+        model.addAttribute("giangVienPhanBienId", giangVienPhanBienId);
+        
 
         // Nạp danh sách năm
         int currentYear = java.time.Year.now().getValue();
@@ -111,65 +117,75 @@ public class GiangVienController {
     }
     
     @GetMapping("/giangvien/chamdiem")
-    public String hienThiFormChamDiem(@RequestParam(value = "hoiDongId", required = false) Integer hoiDongId,
-                                     Principal principal,
-                                     Model model) {
-        var user = nguoiDungService.getByUsername(principal.getName());
-
-        var giangVienPhanBienList = phanCongGiangVienPhanBienService.findByUserId(user.getId());
-        if (giangVienPhanBienList == null || giangVienPhanBienList.isEmpty()) {
-            model.addAttribute("message", "Bạn không phải giảng viên phản biện hoặc chưa được phân công.");
-            return "error";
+    public String hienThiChamDiem(@RequestParam("giangVienPhanBienId") int giangVienPhanBienId, Model model) {
+        var phanCongList = phanCongGiangVienPhanBienService.findByGiangVienPhanBienId(giangVienPhanBienId);
+        if (phanCongList == null || phanCongList.isEmpty()) {
+            model.addAttribute("error", "Bạn chưa được phân công vào hội đồng nào.");
+            return "chamdiem";
         }
-        var giangVienPhanBien = giangVienPhanBienList.get(0); // Lấy phần tử đầu tiên tạm thời
+        int hoiDongId = phanCongList.get(0).getHoiDongId(); // Lấy hội đồng đầu tiên
 
         var deTaiHoiDongs = deTaiHoiDongService.findByHoiDongId(hoiDongId);
-        var tieuchis = tieuChiService.findByKhoa(user.getKhoa());
 
-        Map<Integer, Map<String, Float>> diemDaCham = new HashMap<>();
+        List<DeTaiKhoaLuan> deTais = new ArrayList<>();
         for (var dthd : deTaiHoiDongs) {
-            var dsDiem = bangDiemService.getAll().stream()
-                .filter(d -> d.getGiangVienPhanBienId().equals(giangVienPhanBien.getGiangVienPhanBienId())
-                        && d.getDeTaiKhoaLuanId().equals(dthd.getDeTaiKhoaLuanId()))
-                .collect(Collectors.toList());
-
-            Map<String, Float> diemTheoTieuChi = new HashMap<>();
-            for (var d : dsDiem) {
-                diemTheoTieuChi.put(d.getTieuChi(), d.getDiem());
-            }
-            diemDaCham.put(dthd.getDeTaiKhoaLuanId(), diemTheoTieuChi);
+            var dt = deTaiService.getDeTaiById(dthd.getDeTaiKhoaLuanId());
+            if (dt != null)
+                deTais.add(dt);
         }
 
-        model.addAttribute("deTaiHoiDongs", deTaiHoiDongs);
-        model.addAttribute("tieuchis", tieuchis);
-        model.addAttribute("giangVienPhanBien", giangVienPhanBien);
-        model.addAttribute("diemDaCham", diemDaCham);
+        var tieuchiList = tieuChiService.getAll();
+
+        model.addAttribute("deTais", deTais);
+        model.addAttribute("tieuchiList", tieuchiList);
+        model.addAttribute("giangVienPhanBienId", giangVienPhanBienId);
         model.addAttribute("hoiDongId", hoiDongId);
 
-        return "chamdiem_phanbien";
-
+        return "chamdiem";
     }
+
+
     
     @PostMapping("/giangvien/chamdiem/save")
     public String luuDiemCham(@RequestParam Map<String, String> params,
-                              @RequestParam int giangVienPhanBienId,
-                              @RequestParam int hoiDongId,
-                              Model model) {
+                              @RequestParam("giangVienPhanBienId") int giangVienPhanBienId,
+                              @RequestParam("hoiDongId") int hoiDongId,
+                              RedirectAttributes redirectAttributes) {
 
-        var tieuchis = tieuChiService.getAll(); // hoặc findByKhoa(...)
+        var tieuchis = tieuChiService.getAll();
         var deTaiHoiDongs = deTaiHoiDongService.findByHoiDongId(hoiDongId);
+
+        boolean hasExistingScore = false;
 
         for (var dthd : deTaiHoiDongs) {
             for (var tc : tieuchis) {
                 String paramKey = "diem_" + dthd.getDeTaiKhoaLuanId() + "_" + tc.getTenTieuChi();
                 if (params.containsKey(paramKey) && !params.get(paramKey).isEmpty()) {
                     float diem = Float.parseFloat(params.get(paramKey));
-                    bangDiemService.add(new BangDiem(null, dthd.getDeTaiKhoaLuanId(), giangVienPhanBienId, tc.getTenTieuChi(), diem));
+
+                    // Kiểm tra đã có điểm cho deTai - giangVien - tieuChi chưa
+                    var existingScore = bangDiemService.findByDeTaiIdAndGiangVienIdAndTieuChi(
+                            dthd.getDeTaiKhoaLuanId(), giangVienPhanBienId, tc.getTenTieuChi());
+
+                    if (existingScore != null) {
+                        hasExistingScore = true;
+                        break; // Nếu đã có điểm, không lưu tiếp
+                    } else {
+                        bangDiemService.add(new BangDiem(null, dthd.getDeTaiKhoaLuanId(), giangVienPhanBienId, tc.getTenTieuChi(), diem));
+                    }
                 }
             }
+            if (hasExistingScore)
+                break;
         }
 
-        return "redirect:/giangvien/chamdiem?hoiDongId=" + hoiDongId;
+        if (hasExistingScore) {
+            redirectAttributes.addFlashAttribute("message", "Bạn đã nhập điểm cho sinh viên này rồi.");
+        } else {
+            redirectAttributes.addFlashAttribute("message", "Đã lưu điểm thành công.");
+        }
+
+        return "redirect:/giangvien/chamdiem?hoiDongId=" + hoiDongId + "&giangVienPhanBienId=" + giangVienPhanBienId;
     }
 
 }

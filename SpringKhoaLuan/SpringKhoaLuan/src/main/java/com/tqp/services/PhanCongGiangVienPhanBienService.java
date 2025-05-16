@@ -20,6 +20,6 @@ public interface PhanCongGiangVienPhanBienService {
     void addPhanBien(int hoiDongId, int giangVienId);
     void assignPhanBien(int giangVienId, int hoiDongId);
     
-    List<PhanCongGiangVienPhanBien> findByUserId(int userId);  // thêm
+    List<PhanCongGiangVienPhanBien> findByGiangVienPhanBienId(int giangVienPhanBienId);
     List<PhanCongGiangVienPhanBien> findByHoiDongId(int hoiDongId); // thêm
 }

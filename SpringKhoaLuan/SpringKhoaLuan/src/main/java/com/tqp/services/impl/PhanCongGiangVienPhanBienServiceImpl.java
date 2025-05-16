@@ -65,12 +65,8 @@ public class PhanCongGiangVienPhanBienServiceImpl implements PhanCongGiangVienPh
     }
     
     @Override
-    public List<PhanCongGiangVienPhanBien> findByUserId(int userId) {
-        Session s = factory.getObject().getCurrentSession();
-        String hql = "FROM PhanCongGiangVienPhanBien WHERE giangVienPhanBienId = :userId";
-        Query q = s.createQuery(hql, PhanCongGiangVienPhanBien.class);
-        q.setParameter("userId", userId);
-        return q.getResultList();
+    public List<PhanCongGiangVienPhanBien> findByGiangVienPhanBienId(int giangVienPhanBienId) {
+        return repo.findByGiangVienPhanBienId(giangVienPhanBienId);
     }
 
     @Override

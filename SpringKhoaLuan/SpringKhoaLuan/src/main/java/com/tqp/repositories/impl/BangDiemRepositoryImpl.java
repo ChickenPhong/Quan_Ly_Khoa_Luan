@@ -51,4 +51,18 @@ public class BangDiemRepositoryImpl implements BangDiemRepository{
         if (diem != null)
             s.delete(diem);
     }
+    
+    @Override
+    public BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "FROM BangDiem bd WHERE bd.deTaiKhoaLuanId = :deTaiId AND bd.giangVienPhanBienId = :giangVienId AND bd.tieuChi = :tieuChi";
+        Query query = s.createQuery(hql, BangDiem.class);
+        query.setParameter("deTaiId", deTaiId);
+        query.setParameter("giangVienId", giangVienId);
+        query.setParameter("tieuChi", tieuChi);
+
+        List<BangDiem> result = query.getResultList();
+        if (result.isEmpty()) return null;
+        return result.get(0);
+    }
 }

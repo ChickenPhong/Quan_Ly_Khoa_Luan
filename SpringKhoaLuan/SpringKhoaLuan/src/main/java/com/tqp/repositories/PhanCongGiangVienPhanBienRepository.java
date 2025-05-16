@@ -18,6 +18,6 @@ public interface PhanCongGiangVienPhanBienRepository {
     void delete(int id);
     void assignPhanBien(int giangVienId, int hoiDongId);
     
-    List<PhanCongGiangVienPhanBien> findByUserId(int userId);
+    List<PhanCongGiangVienPhanBien> findByGiangVienPhanBienId(int giangVienPhanBienId);
     List<PhanCongGiangVienPhanBien> findByHoiDongId(int hoiDongId);
 }

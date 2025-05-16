@@ -44,7 +44,7 @@
                         <a class="nav-link" th:href="@{/hoidong}" sec:authorize="hasRole('ROLE_GIAOVU')">Hội đồng</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/giangvien/chamdiem}" sec:authorize="hasRole('ROLE_GIANGVIEN')">Chấm điểm</a>
+                        <a class="nav-link" th:href="@{/giangvien/chamdiem(giangVienPhanBienId=${giangVienPhanBienId})}" sec:authorize="hasRole('ROLE_GIANGVIEN')">Chấm điểm</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/khoaluan/giaodetai}" sec:authorize="hasRole('ROLE_GIAOVU')">Giao đề tài</a>

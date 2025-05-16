@@ -14,8 +14,10 @@ import com.tqp.services.BangDiemService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class BangDiemServiceImpl implements BangDiemService{
     @Autowired
     private BangDiemRepository bangDiemRepo;
@@ -38,5 +40,10 @@ public class BangDiemServiceImpl implements BangDiemService{
     @Override
     public void delete(int id) {
         bangDiemRepo.delete(id);
+    }
+    
+    @Override
+    public BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi) {
+        return bangDiemRepo.findByDeTaiIdAndGiangVienIdAndTieuChi(deTaiId, giangVienId, tieuChi);
     }
 }

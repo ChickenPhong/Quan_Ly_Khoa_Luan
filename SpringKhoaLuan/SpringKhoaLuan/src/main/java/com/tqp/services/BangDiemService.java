@@ -16,4 +16,6 @@ public interface BangDiemService {
     BangDiem getById(int id);
     BangDiem add(BangDiem diem);
     void delete(int id);
+    
+    BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi);
 }
