@@ -10,6 +10,8 @@ package com.tqp.configs;
  */
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.tqp.filters.JwtFilter;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,9 +24,15 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 
 @Configuration
@@ -61,22 +69,38 @@ public class SpringSecurityConfigs {
         
         return cloudinary;
     }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowCredentials(true);
+        config.setAllowedHeaders(List.of("*"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
+        http
+            .cors(Customizer.withDefaults())
+            .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/secure/**").authenticated()  // Bảo vệ đường dẫn cần token
+                .requestMatchers("/api/**").permitAll()
                 .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers("/khoaluan/**").hasAuthority("ROLE_GIAOVU")
                 .requestMatchers("/detai/**").hasAuthority("ROLE_GIANGVIEN")
                 .anyRequest().authenticated()
-                
             )
             .formLogin(form -> form
                 .loginPage("/login")
-                .loginProcessingUrl("/login") // Đảm bảo POST tới /login hoạt động
-                .defaultSuccessUrl("/", true) // Redirect tới "/" sau login thành công
+                .loginProcessingUrl("/login")
+                .defaultSuccessUrl("/", true)
                 .failureUrl("/login?error=true")
                 .permitAll()
             )
@@ -86,22 +110,25 @@ public class SpringSecurityConfigs {
                 .permitAll()
             );
 
+        // Đăng ký JwtFilter để xử lý xác thực JWT
+        http.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
     
-    //@Bean
-    //public WebMvcConfigurer webMvcConfigurer() {
-    //    return new WebMvcConfigurer() {
-    //        @Override
-    //        public void addCorsMappings(CorsRegistry registry) {
-    //            registry.addMapping("/**")
-    //                    .allowedOrigins("http://localhost:3000")  // Đảm bảo React có thể gọi API
-    //                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-    //                    .allowCredentials(true)
-    //                    .allowedHeaders("*");
-    //        }
-    //    };
-    //}
+    @Bean
+    public WebMvcConfigurer webMvcConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")  // Đảm bảo React có thể gọi API
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowCredentials(true)
+                        .allowedHeaders("*");
+            }
+        };
+    }
     
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {

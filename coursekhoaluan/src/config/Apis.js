@@ -9,18 +9,18 @@ export const endpoints = {
     'current-user': '/secure/profile',
 
     // dành cho quản trị
-    'users': '/users',
+    'users': 'users',
 
     // dành cho giáo vụ
-    'theses': '/theses',
-    'assign-reviewers': '/theses/assign',
-    'committees': '/committees',
+    'theses': 'theses',
+    'assign-reviewers': 'theses/assign',
+    'committees': 'committees',
 
     // dành cho giảng viên chấm điểm
-    'scores': '/scores',
+    'scores': 'scores',
 
     // báo cáo
-    'stats': '/stats'
+    'stats': 'stats'
 };
 
 export const authApis = () => {

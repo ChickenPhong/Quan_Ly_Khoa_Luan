@@ -17,9 +17,27 @@ const Login = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            let res = await Apis.post(endpoints["login"], user);
+
+            console.log("🔍 Dữ liệu gửi đi:", user);
+
+            // Gửi JSON thay vì x-www-form-urlencoded
+            let res = await Apis.post(endpoints["login"], user, {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                withCredentials: true // nếu backend dùng session
+            });
+
+            console.log("✅ Kết quả login:", res.data);
+
             cookie.save("token", res.data.token);
+
+            console.log("🍪 Token đã lưu:", res.data.token);
+
             let u = await authApis().get(endpoints["current-user"]);
+
+            console.log("👤 Người dùng hiện tại:", u.data);
+            
             dispatch({ type: "login", payload: u.data });
             nav("/");
         } catch (ex) {

@@ -28,12 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 public class ApiNguoiDungController {
     @Autowired
     private NguoiDungService nguoiDungService;
 
-    // Đăng ký người dùng mới (POST /api/users)
     @PostMapping("/users")
     public ResponseEntity<NguoiDung> create(@RequestParam Map<String, String> params,
                                             @RequestParam(name = "avatar", required = false) MultipartFile avatar) {
@@ -41,7 +40,6 @@ public class ApiNguoiDungController {
         return new ResponseEntity<>(u, HttpStatus.CREATED);
     }
 
-    // Đăng nhập (POST /api/login)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody NguoiDung u) {
         if (this.nguoiDungService.authenticate(u.getUsername(), u.getPassword())) {
@@ -55,10 +53,19 @@ public class ApiNguoiDungController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai thông tin đăng nhập");
     }
 
-    // Truy cập thông tin người dùng hiện tại (GET /api/secure/profile)
     @RequestMapping("/secure/profile")
     @ResponseBody
-    public ResponseEntity<NguoiDung> getProfile(Principal principal) {
-        return new ResponseEntity<>(this.nguoiDungService.getByUsername(principal.getName()), HttpStatus.OK);
+    public ResponseEntity<?> getProfile(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+
+        NguoiDung user = this.nguoiDungService.getByUsername(principal.getName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        return ResponseEntity.ok(user);
     }
 }
+
