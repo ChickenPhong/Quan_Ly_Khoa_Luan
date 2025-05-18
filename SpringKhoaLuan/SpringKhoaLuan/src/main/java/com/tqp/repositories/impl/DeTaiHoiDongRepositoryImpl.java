@@ -100,4 +100,23 @@ public class DeTaiHoiDongRepositoryImpl implements DeTaiHoiDongRepository{
         q.setParameter("hoiDongId", hoiDongId);
         return q.getResultList();
     }
+    
+    @Override
+    public void lockAllByHoiDongId(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "UPDATE DeTaiKhoaLuan_HoiDong SET locked = true WHERE hoiDongId = :hoiDongId";
+        Query q = s.createQuery(hql);
+        q.setParameter("hoiDongId", hoiDongId);
+        q.executeUpdate();
+    }
+
+    @Override
+    public boolean isHoiDongLocked(int hoiDongId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "SELECT COUNT(*) FROM DeTaiKhoaLuan_HoiDong WHERE hoiDongId = :hoiDongId AND locked = false";
+        Query q = s.createQuery(hql);
+        q.setParameter("hoiDongId", hoiDongId);
+        Long count = (Long) q.getSingleResult();
+        return count == 0; // Nếu tất cả đều locked thì return true
+    }
 }

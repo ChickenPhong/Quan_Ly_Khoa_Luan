@@ -65,4 +65,11 @@ public class BangDiemRepositoryImpl implements BangDiemRepository{
         if (result.isEmpty()) return null;
         return result.get(0);
     }
+    
+    @Override
+    public BangDiem update(BangDiem diem) {
+        Session s = factory.getObject().getCurrentSession();
+        s.update(diem);
+        return diem;
+    }
 }

@@ -332,6 +332,25 @@ public class GiaoVuController {
         redirectAttrs.addFlashAttribute("message", "Đã giao đề tài ngẫu nhiên cho hội đồng.");
         return "redirect:/khoaluan/giaodetai?khoaHoc=" + khoaHoc;
     }
+    
+    @GetMapping("/khoaluan/khoa_hoidong")
+    public String viewKhoaHoiDong(Model model) {
+        var hoiDongs = hoiDongService.getAllHoiDong();
+        model.addAttribute("hoiDongs", hoiDongs);
 
-
+        Map<Integer, Boolean> lockedMap = new HashMap<>();
+        for (var hd : hoiDongs) {
+            boolean locked = deTaiHoiDongService.isHoiDongLocked(hd.getId());
+            lockedMap.put(hd.getId(), locked);
+        }
+        model.addAttribute("lockedMap", lockedMap);
+        return "khoa_hoidong";
+    }
+    
+    @PostMapping("/khoaluan/khoa_hoidong")
+    public String khoaHoiDong(@RequestParam("hoiDongId") int hoiDongId, RedirectAttributes redirectAttrs) {
+        deTaiHoiDongService.lockAllByHoiDongId(hoiDongId);
+        redirectAttrs.addFlashAttribute("message", "Đã khóa hội đồng thành công!");
+        return "redirect:/khoaluan/khoa_hoidong";
+    }
 }

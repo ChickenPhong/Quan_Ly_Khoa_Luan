@@ -46,4 +46,9 @@ public class BangDiemServiceImpl implements BangDiemService{
     public BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi) {
         return bangDiemRepo.findByDeTaiIdAndGiangVienIdAndTieuChi(deTaiId, giangVienId, tieuChi);
     }
+    
+    @Override
+    public BangDiem update(BangDiem diem) {
+        return bangDiemRepo.update(diem);
+    }
 }

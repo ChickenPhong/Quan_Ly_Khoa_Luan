@@ -23,4 +23,6 @@ public interface DeTaiHoiDongService {
     long countDeTaiByHoiDongId(int hoiDongId);
     
     List<DeTaiKhoaLuan_HoiDong> findByHoiDongId(int hoiDongId);
+    void lockAllByHoiDongId(int hoiDongId);
+    boolean isHoiDongLocked(int hoiDongId);
 }

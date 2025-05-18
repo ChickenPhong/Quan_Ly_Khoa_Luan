@@ -26,6 +26,9 @@ public class DeTaiKhoaLuan_HoiDong implements Serializable{
 
     @Column(name = "hoiDong_id")
     private Integer hoiDongId;
+    
+    @Column(name = "locked")
+    private boolean locked = false;
 
     public DeTaiKhoaLuan_HoiDong() {}
 
@@ -43,6 +46,9 @@ public class DeTaiKhoaLuan_HoiDong implements Serializable{
 
     public Integer getHoiDongId() { return hoiDongId; }
     public void setHoiDongId(Integer hoiDongId) { this.hoiDongId = hoiDongId; }
+    
+    public boolean isLocked() { return locked; }
+    public void setLocked(boolean locked) { this.locked = locked; }
 
     @Override
     public int hashCode() {

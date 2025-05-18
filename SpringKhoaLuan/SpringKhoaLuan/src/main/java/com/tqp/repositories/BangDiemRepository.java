@@ -18,4 +18,5 @@ public interface BangDiemRepository {
     void delete(int id);
     
     BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi);
+    BangDiem update(BangDiem diem);
 }

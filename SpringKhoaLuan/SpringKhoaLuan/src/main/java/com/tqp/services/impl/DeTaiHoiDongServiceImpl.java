@@ -76,4 +76,14 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
         q.setParameter("hoiDongId", hoiDongId);
         return q.getResultList();
     }
+    
+    @Override
+    public void lockAllByHoiDongId(int hoiDongId) {
+        repo.lockAllByHoiDongId(hoiDongId);
+    }
+    
+    @Override
+    public boolean isHoiDongLocked(int hoiDongId) {
+        return repo.isHoiDongLocked(hoiDongId);
+    }
 }
