@@ -30,7 +30,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/admin/users" element={<AddUser />} />
+              <Route path="/admin/add-user" element={<AddUser />} />
+              <Route path="/admin/users" element={<UserList />} />
               <Route path="/admin" element={<UserList />} />
             </Routes>
           </Container>

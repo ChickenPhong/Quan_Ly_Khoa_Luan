@@ -11,7 +11,7 @@ export const endpoints = {
 
     // 👤 Quản trị viên
     'get-users': 'users/',             // GET - lấy danh sách
-    'add-user': 'users',              // POST - thêm user (multipart/form-data)
+    'add-user': 'users/',              // POST - thêm user (multipart/form-data)
     'delete-user': 'users/delete',    // POST - xóa user (form userId)
 
     // 🎓 Giáo vụ

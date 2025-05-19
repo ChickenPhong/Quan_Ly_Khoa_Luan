@@ -91,6 +91,7 @@ const Home = () => {
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Họ và tên</th>
                                 <th>Tên đăng nhập</th>
                                 <th>Email</th>
                                 <th>Vai trò</th>
@@ -103,6 +104,7 @@ const Home = () => {
                             {users.map((u, idx) => (
                                 <tr key={u.id}>
                                     <td>{idx + 1}</td>
+                                    <td>{u.fullname}</td>
                                     <td>{u.username}</td>
                                     <td>{u.email}</td>
                                     <td>{u.role}</td>
