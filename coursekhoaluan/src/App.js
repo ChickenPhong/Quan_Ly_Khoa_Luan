@@ -5,9 +5,9 @@ import Footer from "./components/layout/Footer";
 import Home from "./components/Home";
 
 import Login from "./components/Login";
+import Profile from "./components/Profile";
 
 import AddUser from "./components/Admin/AddUser";
-import UserList from "./components/Admin/UserList";
 
 import { Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -31,8 +31,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/admin/add-user" element={<AddUser />} />
-              <Route path="/admin/users" element={<UserList />} />
-              <Route path="/admin" element={<UserList />} />
+              <Route path="/profile" element={<Profile />} />
             </Routes>
           </Container>
           <Footer />

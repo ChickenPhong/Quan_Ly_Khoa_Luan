@@ -3,7 +3,7 @@ import { Alert, Button, Card, Col, Row, Table, Image } from "react-bootstrap";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { MyUserContext } from "../config/Contexts";
 import MySpinner from "./layout/MySpinner";
-import { authApis, endpoints } from "../config/Apis";  // Sửa chỗ này, import authApis
+import { authApis, endpoints } from "../config/Apis";
 
 const Home = () => {
     const user = useContext(MyUserContext);
@@ -21,10 +21,10 @@ const Home = () => {
         const fetchData = async () => {
             if (user.role === "ROLE_ADMIN") {
                 try {
-                    const res = await authApis().get(endpoints["get-users"]); // gọi authApis()
+                    const res = await authApis().get(endpoints["get-users"]);
                     setUsers(res.data);
                 } catch (err) {
-                    console.error(err);
+                    console.error("Lỗi tải danh sách user:", err);
                 }
             }
             setLoading(false);
@@ -33,18 +33,20 @@ const Home = () => {
         fetchData();
     }, [q, user, nav]);
 
+    // Sửa hàm xóa gọi POST /users/delete với formData userId
     const deleteUser = async (id) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) return;
 
         try {
             const formData = new FormData();
             formData.append("userId", id);
-            await authApis().post(endpoints["delete-user"], formData); // gọi authApis()
-            // Reload danh sách sau khi xóa
+            await authApis().post(endpoints["delete-user"], formData);
+            // Load lại danh sách sau khi xóa
             const res = await authApis().get(endpoints["get-users"]);
             setUsers(res.data);
         } catch (err) {
-            console.error(err);
+            console.error("Lỗi khi xóa người dùng:", err);
+            alert("Xóa thất bại, vui lòng thử lại.");
         }
     };
 
@@ -83,7 +85,6 @@ const Home = () => {
                 </Col>
             </Row>
 
-            {/* Nếu là ADMIN thì hiển thị bảng danh sách */}
             {user.role === "ROLE_ADMIN" && (
                 <div className="mt-5">
                     <h4>Danh sách người dùng</h4>
@@ -101,8 +102,13 @@ const Home = () => {
                             </tr>
                         </thead>
                         <tbody>
+                            {users.length === 0 && (
+                                <tr>
+                                    <td colSpan={8} className="text-center">Chưa có người dùng</td>
+                                </tr>
+                            )}
                             {users.map((u, idx) => (
-                                <tr key={u.id}>
+                                <tr key={u.id || u.eid || idx}>
                                     <td>{idx + 1}</td>
                                     <td>{u.fullname}</td>
                                     <td>{u.username}</td>
@@ -126,7 +132,7 @@ const Home = () => {
                                         <Button
                                             size="sm"
                                             variant="danger"
-                                            onClick={() => deleteUser(u.id)}
+                                            onClick={() => deleteUser(u.id || u.eid)}
                                         >
                                             Xóa
                                         </Button>
