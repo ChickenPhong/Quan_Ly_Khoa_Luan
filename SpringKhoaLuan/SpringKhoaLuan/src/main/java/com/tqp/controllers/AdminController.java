@@ -40,7 +40,8 @@ public class AdminController {
 
     // Xử lý thêm người dùng
     @PostMapping("/admin/add-user")
-    public String addUser(@RequestParam("username") String username,
+    public String addUser(@RequestParam(value = "fullname") String fullname,
+                          @RequestParam("username") String username,
                           @RequestParam("password") String password,
                           @RequestParam("email") String email,
                           @RequestParam("role") String role,
@@ -50,6 +51,7 @@ public class AdminController {
                           RedirectAttributes redirectAttrs) {
 
         Map<String, String> params = new HashMap<>();
+        params.put("fullname", fullname);
         params.put("username", username);
         params.put("password", password);
         params.put("email", email);

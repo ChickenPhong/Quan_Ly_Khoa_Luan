@@ -15,6 +15,13 @@
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
     <form th:action="@{/admin/add-user}" method="post" enctype="multipart/form-data" class="mt-4">
+        
+        <!-- Fullname -->
+        <div class="mb-3">
+            <label class="form-label">Họ và tên:</label>
+            <input type="text" name="fullname" class="form-control" required>
+        </div>
+        
         <!-- Tên đăng nhập -->
         <div class="mb-3">
             <label class="form-label">Tên đăng nhập:</label>

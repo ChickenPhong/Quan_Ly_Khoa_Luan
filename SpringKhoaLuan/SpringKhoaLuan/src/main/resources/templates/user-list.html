@@ -15,6 +15,7 @@
         <thead>
         <tr>
             <th>#</th>
+            <th>Họ và tên</th> 
             <th>Tên đăng nhập</th>
             <th>Email</th>
             <th>Vai trò</th>
@@ -24,6 +25,7 @@
         <tbody>
         <tr th:each="u, iterStat : ${users}">
             <td th:text="${iterStat.index + 1}"></td>
+            <td th:text="${u.fullname}"></td>
             <td th:text="${u.username}"></td>
             <td th:text="${u.email}"></td>
             <td th:text="${u.role}"></td>

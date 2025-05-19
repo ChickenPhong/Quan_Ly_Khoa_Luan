@@ -89,6 +89,7 @@ public class NguoiDungServiceImpl implements NguoiDungService, UserDetailsServic
     @Override
     public NguoiDung addUser(Map<String, String> params, MultipartFile avatar) {
         NguoiDung u = new NguoiDung();
+        u.setFullname(params.get("fullname"));
         u.setUsername(params.get("username"));
         u.setPassword(passEncoder.encode(params.get("password"))); // mã hóa mật khẩu
         u.setEmail(params.get("email"));

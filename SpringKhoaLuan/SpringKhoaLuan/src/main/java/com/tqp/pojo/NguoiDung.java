@@ -28,6 +28,9 @@ public class NguoiDung implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
+    
+    @Column(name = "fullname")
+    private String fullname;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -56,6 +59,14 @@ public class NguoiDung implements Serializable{
     // Getters & Setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
+    
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
 
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }

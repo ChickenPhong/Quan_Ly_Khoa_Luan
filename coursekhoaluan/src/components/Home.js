@@ -1,25 +1,52 @@
 import { useContext, useEffect, useState } from "react";
-import { Alert, Button, Card, Col, Row, Spinner } from "react-bootstrap";
-import {useNavigate, useSearchParams } from "react-router-dom";
+import { Alert, Button, Card, Col, Row, Table, Image } from "react-bootstrap";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { MyUserContext } from "../config/Contexts";
 import MySpinner from "./layout/MySpinner";
+import { authApis, endpoints } from "../config/Apis";  // Sửa chỗ này, import authApis
 
 const Home = () => {
     const user = useContext(MyUserContext);
     const [loading, setLoading] = useState(true);
+    const [users, setUsers] = useState([]);
     const [q] = useSearchParams();
     const nav = useNavigate();
 
     useEffect(() => {
-        // Nếu chưa đăng nhập thì chuyển hướng sang /login
         if (!user) {
             nav("/login");
             return;
         }
 
-        const timer = setTimeout(() => setLoading(false), 1000);
-        return () => clearTimeout(timer);
+        const fetchData = async () => {
+            if (user.role === "ROLE_ADMIN") {
+                try {
+                    const res = await authApis().get(endpoints["get-users"]); // gọi authApis()
+                    setUsers(res.data);
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+            setLoading(false);
+        };
+
+        fetchData();
     }, [q, user, nav]);
+
+    const deleteUser = async (id) => {
+        if (!window.confirm("Bạn có chắc chắn muốn xóa người dùng này?")) return;
+
+        try {
+            const formData = new FormData();
+            formData.append("userId", id);
+            await authApis().post(endpoints["delete-user"], formData); // gọi authApis()
+            // Reload danh sách sau khi xóa
+            const res = await authApis().get(endpoints["get-users"]);
+            setUsers(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     if (!user)
         return <Alert variant="danger">Bạn chưa đăng nhập!</Alert>;
@@ -36,13 +63,10 @@ const Home = () => {
                     <Card border="info">
                         <Card.Body>
                             <Card.Title>Thông tin vai trò</Card.Title>
-                            {user.role === "admin" && <Alert variant="info">Bạn là quản trị viên. Hãy vào mục <strong>Quản lý người dùng</strong> để cấp tài khoản.</Alert>}
-
-                            {user.role === "giaovu" && <Alert variant="success">Bạn là giáo vụ. Hãy vào mục <strong>Khóa luận</strong> để tạo đề tài và phân công phản biện.</Alert>}
-
-                            {user.role === "giangvien" && <Alert variant="warning">Bạn là giảng viên. Vui lòng vào mục <strong>Hội đồng</strong> để xem và chấm điểm khóa luận.</Alert>}
-
-                            {user.role === "sinhvien" && <Alert variant="secondary">Bạn là sinh viên. Bạn có thể xem điểm khóa luận và lịch bảo vệ của mình.</Alert>}
+                            {user.role === "ROLE_ADMIN" && <Alert variant="info">Bạn là quản trị viên. Hãy vào mục <strong>Quản lý người dùng</strong> để cấp tài khoản.</Alert>}
+                            {user.role === "ROLE_GIAOVU" && <Alert variant="success">Bạn là giáo vụ. Hãy vào mục <strong>Khóa luận</strong> để tạo đề tài và phân công phản biện.</Alert>}
+                            {user.role === "ROLE_GIANGVIEN" && <Alert variant="warning">Bạn là giảng viên. Vui lòng vào mục <strong>Hội đồng</strong> để xem và chấm điểm khóa luận.</Alert>}
+                            {user.role === "ROLE_SINHVIEN" && <Alert variant="secondary">Bạn là sinh viên. Bạn có thể xem điểm khóa luận và lịch bảo vệ của mình.</Alert>}
                         </Card.Body>
                     </Card>
                 </Col>
@@ -58,6 +82,59 @@ const Home = () => {
                     </Card>
                 </Col>
             </Row>
+
+            {/* Nếu là ADMIN thì hiển thị bảng danh sách */}
+            {user.role === "ROLE_ADMIN" && (
+                <div className="mt-5">
+                    <h4>Danh sách người dùng</h4>
+                    <Table striped bordered hover responsive>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Mật khẩu (mã hóa)</th>
+                                <th>Avatar</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((u, idx) => (
+                                <tr key={u.id}>
+                                    <td>{idx + 1}</td>
+                                    <td>{u.username}</td>
+                                    <td>{u.email}</td>
+                                    <td>{u.role}</td>
+                                    <td>
+                                        <input
+                                            className="form-control form-control-sm"
+                                            readOnly
+                                            value={u.password}
+                                        />
+                                    </td>
+                                    <td>
+                                        {u.avatar ? (
+                                            <Image src={u.avatar} width={50} height={50} roundedCircle />
+                                        ) : (
+                                            <span>No avatar</span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <Button
+                                            size="sm"
+                                            variant="danger"
+                                            onClick={() => deleteUser(u.id)}
+                                        >
+                                            Xóa
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
+            )}
         </>
     );
 };

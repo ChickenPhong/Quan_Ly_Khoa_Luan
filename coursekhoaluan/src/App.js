@@ -3,12 +3,18 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 import Home from "./components/Home";
+
 import Login from "./components/Login";
+
+import AddUser from "./components/Admin/AddUser";
+import UserList from "./components/Admin/UserList";
+
 import { Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { MyUserContext, MyDispatchContext } from "./config/Contexts";
 import MyUserReducer from "./reducers/MyUserReducer";
+
 
 function App() {
   // Khởi tạo state user và dispatch
@@ -24,6 +30,8 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/admin/users" element={<AddUser />} />
+              <Route path="/admin" element={<UserList />} />
             </Routes>
           </Container>
           <Footer />
