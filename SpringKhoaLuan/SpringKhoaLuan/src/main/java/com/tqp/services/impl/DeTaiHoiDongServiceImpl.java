@@ -8,9 +8,12 @@ package com.tqp.services.impl;
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.pojo.DeTaiKhoaLuan;
 import com.tqp.pojo.DeTaiKhoaLuan_HoiDong;
 import com.tqp.repositories.DeTaiHoiDongRepository;
 import com.tqp.services.DeTaiHoiDongService;
+import com.tqp.services.DeTaiService;
+import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -27,6 +30,9 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     
     @Autowired
     private LocalSessionFactoryBean factory;
+    
+    @Autowired
+    private DeTaiService deTaiService;
 
     @Override
     public List<DeTaiKhoaLuan_HoiDong> getAll() {
@@ -85,5 +91,17 @@ public class DeTaiHoiDongServiceImpl implements DeTaiHoiDongService{
     @Override
     public boolean isHoiDongLocked(int hoiDongId) {
         return repo.isHoiDongLocked(hoiDongId);
+    }
+    
+    @Override
+    public List<DeTaiKhoaLuan> findDeTaiByHoiDongId(int hoiDongId) {
+        List<DeTaiKhoaLuan_HoiDong> list = this.findByHoiDongId(hoiDongId); // đã có sẵn hàm này
+        List<DeTaiKhoaLuan> result = new ArrayList<>();
+        for (DeTaiKhoaLuan_HoiDong dthd : list) {
+            DeTaiKhoaLuan dt = deTaiService.getDeTaiById(dthd.getDeTaiKhoaLuanId());
+            if (dt != null)
+                result.add(dt);
+        }
+        return result;
     }
 }

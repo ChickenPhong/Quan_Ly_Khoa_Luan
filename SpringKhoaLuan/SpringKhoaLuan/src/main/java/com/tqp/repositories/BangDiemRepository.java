@@ -19,4 +19,6 @@ public interface BangDiemRepository {
     
     BangDiem findByDeTaiIdAndGiangVienIdAndTieuChi(int deTaiId, int giangVienId, String tieuChi);
     BangDiem update(BangDiem diem);
+    
+    List<BangDiem> findByDeTaiKhoaLuanId(int deTaiId);
 }

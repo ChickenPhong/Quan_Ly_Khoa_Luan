@@ -72,4 +72,13 @@ public class BangDiemRepositoryImpl implements BangDiemRepository{
         s.update(diem);
         return diem;
     }
+    
+    @Override
+    public List<BangDiem> findByDeTaiKhoaLuanId(int deTaiId) {
+        Session s = factory.getObject().getCurrentSession();
+        String hql = "FROM BangDiem bd WHERE bd.deTaiKhoaLuanId = :deTaiId";
+        Query query = s.createQuery(hql, BangDiem.class);
+        query.setParameter("deTaiId", deTaiId);
+        return query.getResultList();
+    }
 }

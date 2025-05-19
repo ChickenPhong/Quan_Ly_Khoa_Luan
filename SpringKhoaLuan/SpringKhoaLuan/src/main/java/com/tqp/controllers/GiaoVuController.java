@@ -8,16 +8,20 @@ package com.tqp.controllers;
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.dto.BangDiemTongHopDTO;
 import com.tqp.pojo.DeTaiKhoaLuan;
 import com.tqp.pojo.HoiDong;
 import com.tqp.pojo.NguoiDung;
+import com.tqp.services.BangDiemService;
 import com.tqp.services.DeTaiHoiDongService;
 import com.tqp.services.DeTaiHuongDanService;
 import com.tqp.services.DeTaiService;
 import com.tqp.services.DeTaiSinhVienService;
 import com.tqp.services.HoiDongService;
 import com.tqp.services.NguoiDungService;
+import com.tqp.services.PdfExportService;
 import com.tqp.services.PhanCongGiangVienPhanBienService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +56,15 @@ public class GiaoVuController {
     
     @Autowired
     private PhanCongGiangVienPhanBienService phanCongGiangVienPhanBienService;
+    
+    @Autowired
+    private BangDiemService bangDiemService; 
+    
+    @Autowired
+    private com.tqp.services.EmailService emailService;
+    
+    @Autowired
+    private PdfExportService pdfExportService;
 
     @GetMapping("/khoaluan")
     public String giaoVuView(Model model, Principal principal) {
@@ -350,7 +363,78 @@ public class GiaoVuController {
     @PostMapping("/khoaluan/khoa_hoidong")
     public String khoaHoiDong(@RequestParam("hoiDongId") int hoiDongId, RedirectAttributes redirectAttrs) {
         deTaiHoiDongService.lockAllByHoiDongId(hoiDongId);
-        redirectAttrs.addFlashAttribute("message", "Đã khóa hội đồng thành công!");
+
+        // Sau khi khóa, gửi email cho sinh viên
+        // Lấy danh sách đề tài thuộc hội đồng này
+        var deTaiHoiDongs = deTaiHoiDongService.findByHoiDongId(hoiDongId);
+
+        for (var dthd : deTaiHoiDongs) {
+            int deTaiId = dthd.getDeTaiKhoaLuanId();
+            // Lấy sinh viên thực hiện đề tài này
+            var dtsv = deTaiSinhVienService.findByDeTaiId(deTaiId);
+            if (dtsv != null) {
+                int sinhVienId = dtsv.getSinhVienId();
+                var sinhVien = nguoiDungService.getById(sinhVienId);
+
+                // Tính điểm trung bình hội đồng cho đề tài này
+                Double diemTrungBinh = bangDiemService.tinhDiemTrungBinhByDeTaiId(deTaiId);
+
+                // Gửi email nếu có địa chỉ email
+                if (sinhVien != null && sinhVien.getEmail() != null) {
+                    // Log địa chỉ email và thông tin sinh viên
+                    System.out.println("Đang gửi mail tới: " + sinhVien.getEmail() +
+                                       " | Username: " + sinhVien.getUsername());
+                    String subject = "Thông báo điểm trung bình khoá luận";
+                    String content = String.format(
+                        "Chào %s,\n\n" +
+                        "Bạn đã hoàn thành bảo vệ khoá luận. Điểm trung bình chính thức của bạn do hội đồng chấm là: %.2f.\n" +
+                        "Vui lòng kiểm tra lại kết quả trên hệ thống.\n\n" +
+                        "Trân trọng.",
+                        sinhVien.getUsername(), diemTrungBinh != null ? diemTrungBinh : 0.0
+                    );
+                    emailService.sendEmail(sinhVien.getEmail(), subject, content);
+                }
+            }
+        }
+
+        redirectAttrs.addFlashAttribute("message", "Đã khóa hội đồng thành công và gửi email cho sinh viên!");
         return "redirect:/khoaluan/khoa_hoidong";
+    }
+    
+    // Export từng hội đồng (phải có tên biến!)
+    @GetMapping("/khoaluan/xuat-bangdiem-hoidong/{hoiDongId}")
+    public void xuatBangDiemTongHop(@PathVariable("hoiDongId") int hoiDongId, HttpServletResponse response) throws Exception {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=bangdiem_hoidong_" + hoiDongId + ".pdf");
+
+        List<BangDiemTongHopDTO> bangDiemList = bangDiemService.layBangDiemTongHopTheoHoiDong(hoiDongId);
+        System.out.println("Đang xuất bảng điểm cho hội đồng: " + hoiDongId);
+        System.out.println("Số dòng bảng điểm: " + bangDiemList.size());
+        if (!bangDiemList.isEmpty()) {
+            for (BangDiemTongHopDTO b : bangDiemList) {
+                System.out.println("Tên hội đồng: " + b.getTenHoiDong());
+                System.out.println("Tên đề tài: " + b.getTenDeTai());
+                System.out.println("Sinh viên: " + b.getTenSinhVien());
+            }
+        }
+        pdfExportService.exportBangDiemTongHop(bangDiemList, response.getOutputStream());
+    }
+    
+    @GetMapping("/khoaluan/xuat-bangdiem-tatca")
+    public void xuatTatCaBangDiem(HttpServletResponse response) {
+        try {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=bangdiem_tatca.pdf");
+
+            List<HoiDong> hoiDongs = hoiDongService.getAllHoiDong();
+            List<BangDiemTongHopDTO> tongHop = new ArrayList<>();
+            for (HoiDong hd : hoiDongs) {
+                tongHop.addAll(bangDiemService.layBangDiemTongHopTheoHoiDong(hd.getId()));
+            }
+            pdfExportService.exportBangDiemTongHop(tongHop, response.getOutputStream());
+        } catch (Exception ex) {
+            ex.printStackTrace(); // Log ra console IDE để dễ fix bug nếu có lỗi
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 }

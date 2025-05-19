@@ -8,6 +8,7 @@ package com.tqp.services;
  *
  * @author Tran Quoc Phong
  */
+import com.tqp.pojo.DeTaiKhoaLuan;
 import com.tqp.pojo.DeTaiKhoaLuan_HoiDong;
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface DeTaiHoiDongService {
     List<DeTaiKhoaLuan_HoiDong> findByHoiDongId(int hoiDongId);
     void lockAllByHoiDongId(int hoiDongId);
     boolean isHoiDongLocked(int hoiDongId);
+    
+    List<DeTaiKhoaLuan> findDeTaiByHoiDongId(int hoiDongId);
 }
