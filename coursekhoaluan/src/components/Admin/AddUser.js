@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Form, Table } from "react-bootstrap";
-import { authApis, endpoints } from "../../config/Apis";
+import Apis, { authApis, endpoints } from "../../config/Apis";
 
 const KHOA_LIST = [
     "Công nghệ thông tin",
@@ -19,10 +19,10 @@ const AddUser = () => {
         email: "",
         role: "ROLE_ADMIN",
         khoa: "",
-        khoaHoc: "",
-        avatar: null
+        khoaHoc: "",   
     });
 
+    const avatar = useRef();
     const [message, setMessage] = useState("");
     const [messageType, setMessageType] = useState("");
 
@@ -40,7 +40,7 @@ const AddUser = () => {
     }, []);
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value} = e.target;
         if (name === "role") {
             setForm({
                 ...form,
@@ -48,8 +48,6 @@ const AddUser = () => {
                 khoa: "",
                 khoaHoc: ""
             });
-        } else if (files) {
-            setForm({ ...form, [name]: files[0] });
         } else {
             setForm({ ...form, [name]: value });
         }
@@ -63,22 +61,29 @@ const AddUser = () => {
             if (form[key]) formData.append(key, form[key]);
         }
 
+        if (avatar) {
+            formData.append('avatar', avatar.current.files[0]);
+        }
         try {
-            await authApis().post(endpoints["add-user"], formData);
+            let res = await Apis.post(endpoints['add-user'], formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
             setMessage("Thêm người dùng thành công!");
             setMessageType("success");
             loadUsers();
             // Reset form nếu muốn
-            setForm({
-                fullname: "",
-                username: "",
-                password: "",
-                email: "",
-                role: "ROLE_ADMIN",
-                khoa: "",
-                khoaHoc: "",
-                avatar: null
-            });
+            // setForm({
+            //     fullname: "",
+            //     username: "",
+            //     password: "",
+            //     email: "",
+            //     role: "ROLE_ADMIN",
+            //     khoa: "",
+            //     khoaHoc: "",
+            //     avatar: null
+            // });
         } catch (err) {
             console.error("Lỗi thêm user:", err);
             setMessage("Thêm người dùng thất bại, vui lòng thử lại.");
@@ -134,6 +139,7 @@ const AddUser = () => {
                 <Form.Group className="mb-2">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
+                        type="email"
                         name="email"
                         onChange={handleChange}
                         value={form.email}
@@ -183,11 +189,12 @@ const AddUser = () => {
 
                 <Form.Group className="mb-2">
                     <Form.Label>Avatar</Form.Label>
-                    <Form.Control
+                    {/* <Form.Control
                         type="file"
                         name="avatar"
                         onChange={handleChange}
-                    />
+                    /> */}
+                    <Form.Control ref={avatar} type="file" required />
                 </Form.Group>
 
                 <Button type="submit">Thêm</Button>

@@ -13,10 +13,7 @@ import com.tqp.pojo.TieuChi;
 import com.tqp.services.NguoiDungService;
 import com.tqp.services.TieuChiService;
 import java.security.Principal;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,36 +35,21 @@ public class TieuChiController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addTieuChi(@RequestBody TieuChi tieuChi, Principal principal) {
-        // Kiểm tra principal (người dùng đã đăng nhập chưa)
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                 .body(Map.of("message", "Chưa đăng nhập"));
-        }
-
-        // Lấy user từ principal
+    public String addTieuChi(@ModelAttribute TieuChi tieuChi,  Principal principal) {
+        // Lấy user hiện tại
         NguoiDung user = nguoiDungService.getByUsername(principal.getName());
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                                 .body(Map.of("message", "Người dùng không tồn tại"));
-        }
 
-        // Gán thông tin user tạo tiêu chí
+        // Gán người tạo
         tieuChi.setCreatedBy(user.getId());
+
+        // Gán khoa của giáo vụ
         tieuChi.setKhoa(user.getKhoa());
+
+        // Trạng thái mặc định
         tieuChi.setStatus("active");
 
-        // Thêm tiêu chí
-        try {
-            tieuChiService.addTieuChi(tieuChi);
-        } catch (Exception e) {
-            // Bắt lỗi nếu có, trả về thông báo lỗi
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                 .body(Map.of("message", "Lỗi khi thêm tiêu chí: " + e.getMessage()));
-        }
+        tieuChiService.addTieuChi(tieuChi);
 
-        // Trả về thành công
-        return ResponseEntity.ok(Map.of("message", "Thêm tiêu chí thành công"));
+        return "redirect:/tieuchi";
     }
-
 }

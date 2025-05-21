@@ -33,9 +33,10 @@ public class TieuChiRepositoryImpl implements TieuChiRepository{
     }
 
     @Override
-    public void addTieuChi(TieuChi tieuChi) {
+    public TieuChi addTieuChi(TieuChi tieuChi) {
         Session session = this.factory.getObject().getCurrentSession();
         session.persist(tieuChi);
+        return tieuChi; // trả về entity vừa lưu
     }
     
     @Override
@@ -46,3 +47,4 @@ public class TieuChiRepositoryImpl implements TieuChiRepository{
         return query.getResultList();
     }
 }
+

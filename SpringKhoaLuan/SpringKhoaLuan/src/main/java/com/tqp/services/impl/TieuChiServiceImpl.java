@@ -28,8 +28,8 @@ public class TieuChiServiceImpl implements TieuChiService{
     }
 
     @Override
-    public void addTieuChi(TieuChi tieuChi) {
-        tieuChiRepository.addTieuChi(tieuChi);
+    public TieuChi addTieuChi(TieuChi tieuChi) {
+        return tieuChiRepository.addTieuChi(tieuChi);
     }
     
     @Override

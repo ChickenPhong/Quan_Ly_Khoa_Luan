@@ -6,18 +6,17 @@ import Home from "./components/Home";
 
 import Login from "./components/Login";
 import Profile from "./components/Profile";
-//Admin
+
 import AddUser from "./components/Admin/AddUser";
-//GiaoVu
-import TieuChi from "./components/GiaoVu/TieuChi";
-import XepDanhSachKhoaLuan from "./components/GiaoVu/XepDanhSachKhoaLuan";
+
+import AddTieuChi from "./components/GiaoVu/AddTieuChi";
+import XepDeTai from "./components/GiaoVu/XepDeTai";
 
 import { Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { MyUserContext, MyDispatchContext } from "./config/Contexts";
 import MyUserReducer from "./reducers/MyUserReducer";
-
 
 function App() {
   // Khởi tạo state user và dispatch
@@ -35,9 +34,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/admin/add-user" element={<AddUser />} />
               <Route path="/profile" element={<Profile />} />
-
-              <Route path="/giaovu/tieuchi" element={<TieuChi />} />
-              <Route path="/giaovu/xep_detai" element={<XepDanhSachKhoaLuan />} />
+              <Route path="/giaovu/tieuchi" element={<AddTieuChi />} />
+              <Route path="/giaovu/xepdetai" element={<XepDeTai />} />
             </Routes>
           </Container>
           <Footer />

@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface TieuChiRepository {
     List<TieuChi> getAll();
-    void addTieuChi(TieuChi tieuChi);
+    TieuChi addTieuChi(TieuChi tieuChi); 
     
     List<TieuChi> findByKhoa(String khoa);
 }
