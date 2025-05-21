@@ -11,6 +11,8 @@ import AddUser from "./components/Admin/AddUser";
 
 import AddTieuChi from "./components/GiaoVu/AddTieuChi";
 import XepDeTai from "./components/GiaoVu/XepDeTai";
+import DanhSachThucHien from "./components/GiaoVu/DanhSachThucHien";
+import TaoHoiDong from "./components/GiaoVu/TaoHoiDong";
 
 import { Container } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -36,6 +38,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/giaovu/tieuchi" element={<AddTieuChi />} />
               <Route path="/giaovu/xepdetai" element={<XepDeTai />} />
+              <Route path="/giaovu/danhsachthuchien" element={<DanhSachThucHien />} />
+              <Route path="/giaovu/taohoidong" element={<TaoHoiDong />} />
             </Routes>
           </Container>
           <Footer />

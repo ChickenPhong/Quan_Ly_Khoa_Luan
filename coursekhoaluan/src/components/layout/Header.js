@@ -34,11 +34,11 @@ const Header = () => {
                                 {user?.role === "ROLE_GIAOVU" && (
                                     <>
                                         <Nav.Link as={Link} to="/giaovu/tieuchi">Tiêu chí</Nav.Link>
-                                        <Nav.Link as={Link} to="/giaovu/xep_detai">Xếp Đề tài</Nav.Link>
-                                        <Nav.Link as={Link} to="/giaovu/danhsach_thuchien">Danh sách thực hiện</Nav.Link>
-                                        <Nav.Link as={Link} to="/giaovu/hoidong">Hội đồng</Nav.Link>
+                                        <Nav.Link as={Link} to="/giaovu/xepdetai">Xếp Đề tài</Nav.Link>
+                                        <Nav.Link as={Link} to="/giaovu/danhsachthuchien">Danh sách thực hiện</Nav.Link>
+                                        <Nav.Link as={Link} to="/giaovu/taohoidong">Hội đồng</Nav.Link>
                                         <Nav.Link as={Link} to="/giaovu/giaodetai">Giao đề tài</Nav.Link>
-                                        <Nav.Link as={Link} to="/giaovu/khoa_hoidong">Khóa Hội đồng</Nav.Link>
+                                        <Nav.Link as={Link} to="/giaovu/khoahoidong">Khóa Hội đồng</Nav.Link>
                                     </>
                                 )}
 
