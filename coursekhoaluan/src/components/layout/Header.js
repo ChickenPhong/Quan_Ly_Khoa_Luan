@@ -49,7 +49,7 @@ const Header = () => {
                                     </>
                                 )}
 
-                                {(user?.role === "ROLE_ADMIN" || user?.role === "ROLE_GIAOVU") && (
+                                {(user?.role === "ROLE_ADMIN") && (
                                     <Nav.Link as={Link} to="/thongke">Thống kê</Nav.Link>
                                 )}
 

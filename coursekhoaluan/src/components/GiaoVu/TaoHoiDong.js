@@ -25,9 +25,8 @@ const TaoHoiDong = () => {
     loadGiangViens();
   }, []);
 
-  // Hàm xử lý chọn phản biện (checkbox)
   const togglePhanBien = (id) => {
-    setPhanBiensIds(prev => 
+    setPhanBiensIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
   };
@@ -40,13 +39,12 @@ const TaoHoiDong = () => {
       setMsgVariant("warning");
       return;
     }
-    if (phanBiensIds.length < 2 || phanBiensIds.length > 3) {
-      setMsg("Vui lòng chọn từ 2 đến 3 giảng viên phản biện.");
+    if (phanBiensIds.length < 1 || phanBiensIds.length > 3) {
+      setMsg("Vui lòng chọn từ 1 đến 3 giảng viên phản biện.");
       setMsgVariant("warning");
       return;
     }
 
-    // Kiểm tra Chủ Tịch, Thư Ký không trùng với nhau hoặc với phản biện
     if (chuTichId === thuKyId) {
       setMsg("Chủ Tịch và Thư Ký không được trùng nhau.");
       setMsgVariant("warning");
@@ -59,19 +57,18 @@ const TaoHoiDong = () => {
     }
 
     const payload = {
-      tenHoiDong,
-      chuTichId,
-      thuKyId,
-      giangVienPhanBienIds: phanBiensIds,
+      name: tenHoiDong,                 // backend dùng 'name'
+      chuTichId: Number(chuTichId),
+      thuKyId: Number(thuKyId),
+      giangVienPhanBienIds: phanBiensIds.map(id => Number(id)),
     };
 
     try {
       setSubmitting(true);
-      await authApis().post("/hoidong/create", payload);
+      await authApis().post("/hoidong/", payload);
       setMsg("Tạo Hội Đồng thành công!");
       setMsgVariant("success");
 
-      // Reset form
       setTenHoiDong("");
       setChuTichId("");
       setThuKyId("");
@@ -109,7 +106,7 @@ const TaoHoiDong = () => {
           >
             <option value="">-- Chọn Chủ Tịch --</option>
             {giangViens
-              .filter(gv => gv.id !== thuKyId && !phanBiensIds.includes(gv.id))
+              .filter(gv => String(gv.id) !== String(thuKyId) && !phanBiensIds.includes(gv.id))
               .map(gv => (
                 <option key={gv.id} value={gv.id}>{gv.username}</option>
               ))}
@@ -125,7 +122,7 @@ const TaoHoiDong = () => {
           >
             <option value="">-- Chọn Thư Ký --</option>
             {giangViens
-              .filter(gv => gv.id !== chuTichId && !phanBiensIds.includes(gv.id))
+              .filter(gv => String(gv.id) !== String(chuTichId) && !phanBiensIds.includes(gv.id))
               .map(gv => (
                 <option key={gv.id} value={gv.id}>{gv.username}</option>
               ))}
@@ -133,10 +130,10 @@ const TaoHoiDong = () => {
         </Form.Group>
 
         <Form.Group className="mb-3">
-          <Form.Label>Chọn Giảng Viên Phản Biện (2-3 người)</Form.Label>
+          <Form.Label>Chọn Giảng Viên Phản Biện (1-3 người)</Form.Label>
           <div>
             {giangViens
-              .filter(gv => gv.id !== chuTichId && gv.id !== thuKyId)
+              .filter(gv => String(gv.id) !== String(chuTichId) && String(gv.id) !== String(thuKyId))
               .map(gv => (
                 <Form.Check
                   inline
