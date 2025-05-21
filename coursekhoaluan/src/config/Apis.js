@@ -21,7 +21,6 @@ export const endpoints = {
 
     // Tiêu chí
     tieuchi: 'tieuchi',        // GET danh sách tiêu chí
-    addTieuchi: 'tieuchi/add', // POST tạo tiêu chí
 
     // 🧑‍🏫 Giảng viên
     scores: 'scores',
@@ -42,5 +41,8 @@ export const authApis = () => {
 
 // Gọi API không cần token
 export default axios.create({
-    baseURL: BASE_URL
+    baseURL: BASE_URL,
+    headers: {
+            'Authorization': `Bearer ${cookie.load('token')}`
+        }
 });

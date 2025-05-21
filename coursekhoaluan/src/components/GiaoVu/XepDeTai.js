@@ -3,40 +3,60 @@ import { Button, Table, Form, Alert } from "react-bootstrap";
 import { authApis } from "../../config/Apis";
 
 const XepDeTai = () => {
-  const [khoaHocList, setKhoaHocList] = useState([]);          // Danh sách các khóa học
-  const [selectedKhoaHoc, setSelectedKhoaHoc] = useState("");  // Khóa học đã chọn
-  const [sinhVienList, setSinhVienList] = useState([]);        // Danh sách sinh viên lọc được
-  const [msg, setMsg] = useState("");                          // Thông báo
+  const [khoaHocList, setKhoaHocList] = useState([]);
+  const [selectedKhoaHoc, setSelectedKhoaHoc] = useState("");
+  const [sinhVienList, setSinhVienList] = useState([]);
+  const [msg, setMsg] = useState("");
+  const [msgType, setMsgType] = useState(""); // 'success' hoặc 'danger'
 
-  // 1. Load danh sách khóa học khi load trang
   useEffect(() => {
     const loadKhoaHoc = async () => {
       try {
-        const res = await authApis().get("/giaovu/khoahoc");
+        const res = await authApis().get("giaovu/khoahoc");
         setKhoaHocList(res.data || []);
       } catch (error) {
         setMsg("Lỗi tải danh sách khóa học: " + error.message);
+        setMsgType("danger");
       }
     };
     loadKhoaHoc();
   }, []);
 
-  // 2. Lọc danh sách sinh viên theo khóa học đã chọn
   const handleLocDanhSach = async (e) => {
     e.preventDefault();
     if (!selectedKhoaHoc) {
       setMsg("Vui lòng chọn khóa học");
+      setMsgType("warning");
       setSinhVienList([]);
       return;
     }
     setMsg("");
     try {
-      // Ví dụ API: /giaovu/sinhvien?khoaHoc=2022
-      const res = await authApis().get(`/giaovu/sinhvien?khoaHoc=${selectedKhoaHoc}`);
+      const res = await authApis().get(`/api/giaovu/sinhviens?khoaHoc=${selectedKhoaHoc}`);
       setSinhVienList(res.data || []);
     } catch (error) {
       setMsg("Lỗi tải danh sách sinh viên: " + error.message);
+      setMsgType("danger");
       setSinhVienList([]);
+    }
+  };
+
+  // Hàm gọi API xếp đề tài
+  const handleXepDeTai = async () => {
+    if (!selectedKhoaHoc) {
+      setMsg("Vui lòng chọn khóa học trước khi xếp đề tài");
+      setMsgType("warning");
+      return;
+    }
+    setMsg("");
+    try {
+      const res = await authApis().post(`/api/giaovu/xepdetai?khoaHoc=${selectedKhoaHoc}`);
+      setMsg(res.data.message || "Xếp đề tài thành công");
+      setMsgType("success");
+    } catch (error) {
+      const errMsg = error.response?.data?.error || error.message;
+      setMsg("Lỗi khi xếp đề tài: " + errMsg);
+      setMsgType("danger");
     }
   };
 
@@ -46,7 +66,7 @@ const XepDeTai = () => {
         Xếp danh sách sinh viên thực hiện khóa luận
       </h2>
 
-      {msg && <Alert variant="warning">{msg}</Alert>}
+      {msg && <Alert variant={msgType}>{msg}</Alert>}
 
       <Form className="row mb-4" onSubmit={handleLocDanhSach}>
         <div className="col-md-4">
@@ -69,9 +89,18 @@ const XepDeTai = () => {
             Lọc danh sách
           </Button>
         </div>
+        <div className="col-md-2 align-self-end">
+          <Button
+            variant="success"
+            className="w-100"
+            type="button"
+            onClick={handleXepDeTai}
+          >
+            Xếp đề tài
+          </Button>
+        </div>
       </Form>
 
-      {/* Hiển thị bảng sinh viên nếu có danh sách */}
       {sinhVienList.length > 0 && (
         <div>
           <h5 className="mb-3">

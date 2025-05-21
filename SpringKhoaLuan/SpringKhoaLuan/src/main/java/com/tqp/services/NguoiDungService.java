@@ -28,4 +28,7 @@ public interface NguoiDungService extends UserDetailsService{
     List<NguoiDung> getGiangVienByKhoa(String khoa);
     // Mới gộp từ SinhVienService
     List<NguoiDung> getSinhVienByKhoaVaKhoaHoc(String khoa, String khoaHoc);
+    
+    //api
+    List<String> getAllKhoaHocByKhoa(String khoa);
 }

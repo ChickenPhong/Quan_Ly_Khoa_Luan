@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/api/tieuchi")
@@ -36,32 +38,26 @@ public class ApiTieuChiController {
     }
 
     // Tạo tiêu chí mới (POST /api/tieuchi/add)
-    @PostMapping("/add")
-    public ResponseEntity<?> addTieuChi(@RequestBody TieuChi tieuChi, Principal principal) {
+    @PostMapping(path ="/",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TieuChi> addTieuChi(@RequestParam Map<String, String> params, Principal principal) {
         if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Chưa đăng nhập hoặc token không hợp lệ");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        try {
-            // Lấy user hiện tại
-            NguoiDung user = nguoiDungService.getByUsername(principal.getName());
-
-            // Gán người tạo
-            tieuChi.setCreatedBy(user.getId());
-
-            // Gán khoa của giáo vụ
-            tieuChi.setKhoa(user.getKhoa());
-
-            // Trạng thái mặc định
-            tieuChi.setStatus("active");
-
-            TieuChi saved = tieuChiService.addTieuChi(tieuChi);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Lỗi khi tạo tiêu chí: " + e.getMessage());
+        String tenTieuChi = params.get("tenTieuChi");
+        if (tenTieuChi == null || tenTieuChi.trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
+        NguoiDung user = nguoiDungService.getByUsername(principal.getName());
+
+        TieuChi tieuChi = new TieuChi();
+        tieuChi.setTenTieuChi(tenTieuChi.trim());
+        tieuChi.setCreatedBy(user.getId());
+        tieuChi.setKhoa(user.getKhoa());
+        tieuChi.setStatus("active");
+
+        TieuChi saved = tieuChiService.addTieuChi(tieuChi);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

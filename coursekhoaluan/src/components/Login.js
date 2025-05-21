@@ -25,7 +25,7 @@ const Login = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                withCredentials: true // nếu backend dùng session
+                //withCredentials: true // nếu backend dùng session
             });
 
             console.log("✅ Kết quả login:", res.data);

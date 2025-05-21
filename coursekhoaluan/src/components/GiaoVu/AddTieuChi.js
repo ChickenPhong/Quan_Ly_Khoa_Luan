@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button, Form, Table, Alert } from "react-bootstrap";
-import { authApis } from "../../config/Apis";
+import Apis, { authApis } from "../../config/Apis";
 
 const AddTieuChi = () => {
   const [tieuChiList, setTieuChiList] = useState([]);
@@ -30,11 +30,18 @@ const AddTieuChi = () => {
     }
 
     try {
-      const res = await authApis().post("/tieuchi/add", {
-        tenTieuChi: newTieuChi,
+      const formData = new FormData();
+      formData.append("tenTieuChi", newTieuChi.trim());
+
+      // Gửi request với Content-Type multipart/form-data giống AddUser
+      let res = await  authApis().post("/tieuchi/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-      // res.data là tiêu chí mới tạo được backend trả về
-      setTieuChiList([...tieuChiList, res.data]); // thêm vào danh sách
+
+      // Cập nhật danh sách tiêu chí mới
+      setTieuChiList([...tieuChiList, res.data]);
       setMsg("Tạo tiêu chí thành công");
       setNewTieuChi("");
     } catch (error) {

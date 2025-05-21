@@ -39,6 +39,7 @@ const Header = () => {
                                         <Nav.Link as={Link} to="/giaovu/taohoidong">Hội đồng</Nav.Link>
                                         <Nav.Link as={Link} to="/giaovu/giaodetai">Giao đề tài</Nav.Link>
                                         <Nav.Link as={Link} to="/giaovu/khoahoidong">Khóa Hội đồng</Nav.Link>
+                                        <Nav.Link as={Link} to="/giaovu/thongke">Thống kê</Nav.Link>
                                     </>
                                 )}
 

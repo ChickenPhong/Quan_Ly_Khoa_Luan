@@ -106,4 +106,25 @@ public class NguoiDungRepositoryImpl implements NguoiDungRepository {
         return query.getResultList();
 
     }
+    
+    //api
+    @Override
+    public List<String> getAllKhoaHocByKhoa(String khoa) {
+        Session session = this.factory.getObject().getCurrentSession();
+
+        String hql = "SELECT DISTINCT n.khoaHoc FROM NguoiDung n WHERE n.khoa = :khoa ORDER BY n.khoaHoc DESC";
+        Query query = session.createQuery(hql);
+        query.setParameter("khoa", khoa);
+
+        return query.getResultList();
+    }
+    
+    @Override
+    public List<String> findDistinctKhoaHocByKhoa(String khoa) {
+        Session session = this.factory.getObject().getCurrentSession();
+        String hql = "SELECT DISTINCT n.khoaHoc FROM NguoiDung n WHERE n.khoa = :khoa ORDER BY n.khoaHoc DESC";
+        Query query = session.createQuery(hql);
+        query.setParameter("khoa", khoa);
+        return query.getResultList();
+    }
 }

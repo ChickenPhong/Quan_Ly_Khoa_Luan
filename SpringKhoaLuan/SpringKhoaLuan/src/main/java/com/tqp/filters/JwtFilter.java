@@ -25,7 +25,7 @@ public class JwtFilter implements Filter{
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-        if (httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/api/secure")) {
+        if (httpRequest.getRequestURI().startsWith(httpRequest.getContextPath() + "/api")) {
             String header = httpRequest.getHeader("Authorization");
 
             if (header == null || !header.startsWith("Bearer ")) {
